@@ -1,4 +1,4 @@
-# American Lyceum
+# Apex Group Of Schools
 
 Project is structured for separate frontend, backend, API, and runtime data work.
 

@@ -3,13 +3,13 @@ const { readStore, upsertRecord } = require('../_lib/mobileStore');
 
 const defaultAboutSoftware = {
     id: 'ABOUT-SOFTWARE',
-    appName: 'American Lyceum',
-    schoolName: 'American Lyceum',
+    appName: 'Apex Group Of Schools',
+    schoolName: 'Apex Group Of Schools',
     website: 'https://YOUR-DOMAIN.com/',
     supportEmail: '',
-    supportPhone: '03174944258',
-    schoolAddress: 'Main tehsil Road near post office Sharaqpur Sharif district sheikhupura',
-    description: 'Student and teacher portal APIs for American Lyceum.',
+    supportPhone: '03461414335',
+    schoolAddress: 'Lajpat Road Shahdara Lahore',
+    description: 'Student and teacher portal APIs for Apex Group Of Schools.',
     version: '1.0.0'
 };
 

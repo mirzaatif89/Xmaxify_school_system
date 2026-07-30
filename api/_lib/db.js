@@ -1,8 +1,9 @@
 const mysql = require('mysql2/promise');
+const path = require('path');
 const { Sequelize, DataTypes, Op } = require('sequelize');
 const { syncAuthUsers } = require('./services');
 
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '..', '..', '.env') });
 
 let startupPromise = null;
 let sequelize = null;
@@ -190,15 +191,43 @@ function defineAppSettingModel(db) {
     });
 }
 
-async function initializeDatabase() {
-    const connection = await mysql.createConnection({
-        host: process.env.DB_HOST || 'localhost',
+function requireDbEnv(name) {
+    const value = process.env[name];
+    if (!value || !String(value).trim()) {
+        throw new Error(`${name} is required in .env for MySQL connection.`);
+    }
+    return String(value).trim();
+}
+
+function getDbConfig() {
+    return {
+        host: process.env.DB_HOST || '127.0.0.1',
         port: Number(process.env.DB_PORT || 3306),
-        user: process.env.DB_USER || 'root',
+        name: requireDbEnv('DB_NAME'),
+        user: requireDbEnv('DB_USER'),
         password: process.env.DB_PASSWORD || ''
+    };
+}
+
+function shouldAutoCreateDatabase() {
+    return String(process.env.AUTO_CREATE_DB || '').trim().toLowerCase() === 'true';
+}
+
+async function initializeDatabase() {
+    const dbConfig = getDbConfig();
+
+    if (!shouldAutoCreateDatabase()) {
+        return;
+    }
+
+    const connection = await mysql.createConnection({
+        host: dbConfig.host,
+        port: dbConfig.port,
+        user: dbConfig.user,
+        password: dbConfig.password
     });
 
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.DB_NAME || 'school_system'}\`;`);
+    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbConfig.name}\`;`);
     await connection.end();
 }
 
@@ -328,14 +357,15 @@ async function getDb() {
     if (!startupPromise) {
         startupPromise = (async () => {
             await initializeDatabase();
+            const dbConfig = getDbConfig();
 
             const db = new Sequelize(
-                process.env.DB_NAME || 'school_system',
-                process.env.DB_USER || 'root',
-                process.env.DB_PASSWORD || '',
+                dbConfig.name,
+                dbConfig.user,
+                dbConfig.password,
                 {
-                    host: process.env.DB_HOST || 'localhost',
-                    port: Number(process.env.DB_PORT || 3306),
+                    host: dbConfig.host,
+                    port: dbConfig.port,
                     dialect: 'mysql',
                     logging: false
                 }

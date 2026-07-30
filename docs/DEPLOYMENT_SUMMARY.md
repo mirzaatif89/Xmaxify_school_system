@@ -94,5 +94,5 @@ https://your-backend.onrender.com
 
 ---
 
-Created by American Lyceum
+Created by Apex Group Of Schools
 Last updated: 2026

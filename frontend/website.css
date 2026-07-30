@@ -4,15 +4,14 @@
     --ink: #1c102b;
     --text: #33263f;
     --muted: #74657f;
-    --purple: #43206f;
-    --purple-dark: #251042;
-    --red: #d9272f;
-    --red-dark: #a9141b;
-    --gold: #f2c85b;
-    --line: #e8dfef;
-    --soft: #faf7fc;
+    --blue: #0f5e9c;
+    --blue-dark: #083a63;
+    --gold: #f2b21b;
+    --gold-dark: #c58a04;
+    --line: #d9e6f2;
+    --soft: #f4f8fc;
     --surface: #ffffff;
-    --shadow: 0 18px 42px rgba(43, 18, 77, 0.14);
+    --shadow: 0 18px 42px rgba(8, 58, 99, 0.14);
     --radius: 14px;
     --wrap: min(1120px, calc(100% - 32px));
 }
@@ -31,8 +30,8 @@ body {
     overflow-x: hidden;
     color: var(--text);
     background:
-        radial-gradient(circle at top left, rgba(217, 39, 47, 0.08), transparent 28rem),
-        linear-gradient(180deg, #ffffff, #fbf8fd 56%, #ffffff);
+        radial-gradient(circle at top left, rgba(242, 178, 27, 0.12), transparent 28rem),
+        linear-gradient(180deg, #ffffff, #f6fbff 56%, #ffffff);
     font-family: "Inter", "Segoe UI", Arial, sans-serif;
     font-size: 16px;
     line-height: 1.6;
@@ -77,7 +76,7 @@ svg {
     gap: 1.2rem;
     padding: 0.32rem 1rem;
     color: #ffffff;
-    background: linear-gradient(90deg, var(--purple-dark), var(--purple) 58%, var(--red-dark));
+    background: linear-gradient(90deg, var(--blue-dark), var(--blue) 58%, var(--gold-dark));
     font-size: 0.84rem;
     font-weight: 800;
 }
@@ -104,7 +103,7 @@ svg {
     display: inline-flex;
     align-items: center;
     gap: 0.72rem;
-    color: var(--purple-dark);
+    color: var(--blue-dark);
     font-family: "Manrope", "Inter", sans-serif;
     font-weight: 800;
 }
@@ -139,7 +138,7 @@ svg {
 }
 
 .nav-links a:hover {
-    color: var(--red);
+    color: var(--gold-dark);
 }
 
 .nav-login {
@@ -148,7 +147,7 @@ svg {
     align-items: center;
     padding: 0.62rem 0.9rem !important;
     color: #ffffff !important;
-    background: linear-gradient(135deg, var(--purple), var(--red));
+    background: linear-gradient(135deg, var(--blue), var(--gold-dark));
 }
 
 .menu-toggle {
@@ -171,8 +170,8 @@ svg {
     padding: clamp(2rem, 5vw, 4rem) max(1rem, calc((100vw - 1120px) / 2 + 1rem));
     color: var(--text);
     background:
-        radial-gradient(circle at 16% 20%, rgba(217, 39, 47, 0.14), transparent 18rem),
-        linear-gradient(135deg, #ffffff 0%, #fbf7fd 48%, #f2eaf8 100%);
+        radial-gradient(circle at 16% 20%, rgba(242, 178, 27, 0.16), transparent 18rem),
+        linear-gradient(135deg, #ffffff 0%, #f7fbff 48%, #eef5fb 100%);
 }
 
 .hero-panel {
@@ -181,7 +180,7 @@ svg {
 
 .eyebrow {
     margin: 0 0 0.7rem;
-    color: var(--red);
+    color: var(--gold-dark);
     font-family: "Manrope", "Inter", sans-serif;
     font-size: 0.76rem;
     font-weight: 800;
@@ -201,7 +200,7 @@ h3 {
 
 .hero h1 {
     max-width: 660px;
-    color: var(--purple-dark);
+    color: var(--blue-dark);
     font-size: clamp(3rem, 6.3vw, 6rem);
     line-height: 0.93;
     overflow-wrap: anywhere;
@@ -242,12 +241,12 @@ h3 {
 .inquiry-form button {
     border: 1px solid var(--gold);
     color: #ffffff;
-    background: linear-gradient(135deg, var(--red), var(--purple));
+    background: linear-gradient(135deg, var(--blue), var(--gold-dark));
 }
 
 .secondary-action {
-    border: 1px solid rgba(67, 32, 111, 0.22);
-    color: var(--purple-dark);
+    border: 1px solid rgba(15, 94, 156, 0.22);
+    color: var(--blue-dark);
     background: #ffffff;
 }
 
@@ -264,10 +263,10 @@ h3 {
     display: inline-flex;
     align-items: center;
     gap: 0.42rem;
-    border: 1px solid rgba(67, 32, 111, 0.16);
+    border: 1px solid rgba(15, 94, 156, 0.16);
     border-radius: 999px;
     padding: 0.48rem 0.68rem;
-    color: var(--purple-dark);
+    color: var(--blue-dark);
     background: rgba(255, 255, 255, 0.86);
     font-size: 0.88rem;
     font-weight: 800;
@@ -281,12 +280,12 @@ h3 {
     display: grid;
     place-items: center;
     overflow: hidden;
-    border: 1px solid rgba(67, 32, 111, 0.16);
+    border: 1px solid rgba(15, 94, 156, 0.16);
     border-radius: 22px;
     background:
         linear-gradient(160deg, rgba(255, 255, 255, 0.98), rgba(250, 247, 252, 0.96)),
         #ffffff;
-    box-shadow: 0 24px 60px rgba(43, 18, 77, 0.18);
+    box-shadow: 0 24px 60px rgba(8, 58, 99, 0.18);
 }
 
 .hero-media img {
@@ -335,7 +334,7 @@ h3 {
 }
 
 .quick-strip strong {
-    color: var(--purple-dark);
+    color: var(--blue-dark);
     font-family: "Manrope", "Inter", sans-serif;
     font-size: 1.05rem;
 }
@@ -408,7 +407,7 @@ h3 {
     border-radius: 18px;
     border: 1px solid var(--line);
     background:
-        linear-gradient(135deg, rgba(67, 32, 111, 0.08), rgba(217, 39, 47, 0.06)),
+        linear-gradient(135deg, rgba(15, 94, 156, 0.08), rgba(242, 178, 27, 0.08)),
         #ffffff;
     box-shadow: var(--shadow);
 }
@@ -430,12 +429,12 @@ h3 {
 .program-grid svg,
 .contact-grid svg,
 .admission-points svg {
-    color: var(--red);
+    color: var(--gold-dark);
 }
 
 .about-cards strong,
 .campus-grid strong {
-    color: var(--purple-dark);
+    color: var(--blue-dark);
     font-family: "Manrope", "Inter", sans-serif;
 }
 
@@ -443,7 +442,7 @@ h3 {
 .life-section {
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
-    background: linear-gradient(180deg, #fbf8fd, #ffffff);
+    background: linear-gradient(180deg, #f7fbff, #ffffff);
 }
 
 .program-grid {
@@ -455,7 +454,7 @@ h3 {
 .program-grid article {
     overflow: hidden;
     background:
-        linear-gradient(180deg, #ffffff, #fbf8fd);
+        linear-gradient(180deg, #ffffff, #f7fbff);
 }
 
 .program-grid img {
@@ -469,7 +468,7 @@ h3 {
 
 .program-grid h3 {
     margin: 1rem 1rem 0.4rem;
-    color: var(--purple-dark);
+    color: var(--blue-dark);
     font-size: 1.12rem;
 }
 
@@ -501,16 +500,16 @@ h3 {
     border-radius: 18px;
     border: 1px solid var(--line);
     background:
-        radial-gradient(circle at top left, rgba(217, 39, 47, 0.14), transparent 16rem),
-        linear-gradient(145deg, #ffffff, #f3edf7);
+        radial-gradient(circle at top left, rgba(242, 178, 27, 0.14), transparent 16rem),
+        linear-gradient(145deg, #ffffff, #eef5fb);
     box-shadow: var(--shadow);
 }
 
 .director-photo {
     min-height: 500px;
     background:
-        radial-gradient(circle at top right, rgba(217, 39, 47, 0.18), transparent 16rem),
-        linear-gradient(145deg, #ffffff, #efe7f7);
+        radial-gradient(circle at top right, rgba(242, 178, 27, 0.18), transparent 16rem),
+        linear-gradient(145deg, #ffffff, #eef5fb);
 }
 
 .principal-photo img,
@@ -531,7 +530,7 @@ h3 {
 
 .principal-message h2,
 .director-message h2 {
-    color: var(--purple-dark);
+    color: var(--blue-dark);
 }
 
 .principal-message p,
@@ -583,13 +582,13 @@ h3 {
 }
 
 .principal-signoff strong {
-    color: var(--purple-dark);
+    color: var(--blue-dark);
     font-family: "Manrope", "Inter", sans-serif;
     font-size: 1.2rem;
 }
 
 .principal-signoff small {
-    color: var(--red);
+    color: var(--gold-dark);
     font-weight: 800;
 }
 
@@ -605,8 +604,8 @@ h3 {
     overflow: hidden;
     border-radius: 18px;
     background:
-        linear-gradient(145deg, rgba(67, 32, 111, 0.94), rgba(217, 39, 47, 0.84)),
-        var(--purple);
+        linear-gradient(145deg, rgba(15, 94, 156, 0.94), rgba(242, 178, 27, 0.84)),
+        var(--blue);
     box-shadow: var(--shadow);
 }
 
@@ -698,7 +697,7 @@ h3 {
 
 .form-status {
     margin: 0;
-    color: var(--red);
+    color: var(--gold-dark);
     font-weight: 800;
 }
 
@@ -735,7 +734,7 @@ h3 {
 }
 
 .campus-grid svg {
-    color: var(--red);
+    color: var(--gold-dark);
 }
 
 .campus-grid strong {
@@ -748,7 +747,7 @@ h3 {
 
 .campus-grid a {
     margin-top: 0.25rem;
-    color: var(--purple);
+    color: var(--blue);
     font-weight: 800;
 }
 
@@ -759,7 +758,7 @@ h3 {
     align-items: center;
     padding: clamp(3rem, 6vw, 4.5rem) max(1rem, calc((100vw - 1120px) / 2 + 1rem));
     color: #ffffff;
-    background: linear-gradient(90deg, var(--purple-dark), var(--red-dark));
+    background: linear-gradient(90deg, var(--blue-dark), var(--gold-dark));
 }
 
 .portal-section h2 {
@@ -959,7 +958,7 @@ h3 {
         gap: 1rem;
         padding: 12px 12px 2.2rem;
         background:
-            linear-gradient(180deg, rgba(43, 18, 77, 0.98), rgba(217, 39, 47, 0.84) 74%, #fbf8fd 74%);
+            linear-gradient(180deg, rgba(8, 58, 99, 0.98), rgba(242, 178, 27, 0.84) 74%, #f6fbff 74%);
     }
 
     .hero-media {
@@ -991,7 +990,7 @@ h3 {
     .hero h1 {
         width: min(100%, 320px);
         max-width: min(100%, 320px);
-        color: var(--purple-dark);
+        color: var(--blue-dark);
         font-size: clamp(2.05rem, 10.4vw, 2.7rem);
         line-height: 1.02;
         overflow-wrap: anywhere;
@@ -1012,7 +1011,7 @@ h3 {
     }
 
     .secondary-action {
-        color: var(--purple-dark);
+        color: var(--blue-dark);
         border-color: var(--line);
         background: #ffffff;
     }

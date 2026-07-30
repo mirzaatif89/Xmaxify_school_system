@@ -1,5 +1,5 @@
 const apiCatalog = {
-    project: 'American Lyceum CRM',
+    project: 'Apex Group Of Schools CRM',
     audience: 'External mobile app developer',
     note: 'Use these backend APIs only. Mobile build artifacts are intentionally not kept in this repository.',
     baseUrlExamples: [

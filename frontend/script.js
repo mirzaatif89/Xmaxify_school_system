@@ -1308,12 +1308,12 @@ function escapeHtml(value) {
 
 function getBrandingSettings() {
     const fallback = {
-        schoolName: 'American Lyceum',
-        schoolTitle: 'American Lyceum',
+        schoolName: 'Apex Group Of Schools',
+        schoolTitle: 'Apex Group Of Schools',
         session: '',
-        phone: '03174944258',
-        address: 'Main tehsil Road near post office Sharaqpur Sharif district sheikhupura',
-        schoolAddress: 'Main tehsil Road near post office Sharaqpur Sharif district sheikhupura',
+        phone: '03461414335',
+        address: 'Lajpat Road Shahdara Lahore',
+        schoolAddress: 'Lajpat Road Shahdara Lahore',
         logoDataUrl: ''
     };
     try {
@@ -2284,12 +2284,12 @@ function queueWelcomeAnimationForNextPage(user) {
     try {
         const displayName = user?.fullName || user?.username || user?.role || 'User';
         const role = user?.role || 'User';
-        let schoolName = 'American Lyceum';
+        let schoolName = 'Apex Group Of Schools';
         try {
             const settings = JSON.parse(localStorage.getItem('eduCore_settings') || '{}') || {};
             schoolName = String(settings.schoolName || settings.schoolTitle || schoolName).trim() || schoolName;
         } catch (_error) {
-            schoolName = 'American Lyceum';
+            schoolName = 'Apex Group Of Schools';
         }
         sessionStorage.setItem(
             EDUCORE_WELCOME_SESSION_KEY,
@@ -2335,11 +2335,11 @@ function showWelcomeAnimationIfNeeded() {
     const schoolName = String(payload.schoolName || (() => {
         try {
             const settings = JSON.parse(localStorage.getItem('eduCore_settings') || '{}') || {};
-            return settings.schoolName || settings.schoolTitle || 'American Lyceum';
+            return settings.schoolName || settings.schoolTitle || 'Apex Group Of Schools';
         } catch (_error) {
-            return 'American Lyceum';
+            return 'Apex Group Of Schools';
         }
-    })()).trim() || 'American Lyceum';
+    })()).trim() || 'Apex Group Of Schools';
     const escape = typeof escapeSessionText === 'function' ? escapeSessionText : (value) => String(value ?? '');
 
     overlay.innerHTML = `
@@ -6001,9 +6001,9 @@ function printStudentAdmissionFormFromEncoded(encodedPayload) {
 function getEmailSchoolName() {
     try {
         const branding = typeof getBrandingSettings === 'function' ? getBrandingSettings() : {};
-        return String(branding.schoolName || branding.schoolTitle || 'American Lyceum').trim() || 'American Lyceum';
+        return String(branding.schoolName || branding.schoolTitle || 'Apex Group Of Schools').trim() || 'Apex Group Of Schools';
     } catch (_error) {
-        return 'American Lyceum';
+        return 'Apex Group Of Schools';
     }
 }
 
@@ -7495,7 +7495,7 @@ function printStudentAdmissionForm(student = {}) {
     const legacyPlaceholderNames = new Set(['harward school', 'harvard school']);
     const schoolName = rawSchoolName && !legacyPlaceholderNames.has(rawSchoolName.toLowerCase())
         ? rawSchoolName
-        : 'American Lyceum';
+        : 'Apex Group Of Schools';
     const schoolLogo = new URL('images/logo.jpeg', window.location.href).href;
     const printedAt = new Date().toLocaleString();
     const statusLabel = getStudentStatusLabel(student);

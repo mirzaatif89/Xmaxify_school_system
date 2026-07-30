@@ -13,7 +13,7 @@ const { getSmtpConfig, sendSmtpEmail } = require('../api/_lib/mailer');
 const apiCatalog = require('../api/_lib/apiCatalog');
 const { normalizeJsonUpload, parseMultipart, saveUploadedFile } = require('../api/_lib/uploadFile');
 
-require('dotenv').config();
+require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
 const app = express();
 const server = http.createServer(app);
@@ -464,28 +464,44 @@ function shouldAutoCreateDatabase(hostname) {
     const explicit = String(process.env.AUTO_CREATE_DB || '').trim().toLowerCase();
     if (explicit === 'true') return true;
     if (explicit === 'false') return false;
-    return isLocalDbHost(hostname);
+    return false;
+}
+
+function requireDbEnv(name) {
+    const value = process.env[name];
+    if (!value || !String(value).trim()) {
+        throw new Error(`${name} is required in .env for MySQL connection.`);
+    }
+    return String(value).trim();
+}
+
+function getDbConfig() {
+    return {
+        host: process.env.DB_HOST || '127.0.0.1',
+        port: Number(process.env.DB_PORT || 3306),
+        name: requireDbEnv('DB_NAME'),
+        user: requireDbEnv('DB_USER'),
+        password: process.env.DB_PASSWORD || ''
+    };
 }
 
 async function initializeDatabase() {
-    const dbHost = process.env.DB_HOST || 'localhost';
-    const dbPort = Number(process.env.DB_PORT || 3306);
-    const dbName = process.env.DB_NAME || 'school_system';
+    const dbConfig = getDbConfig();
 
-    if (!shouldAutoCreateDatabase(dbHost)) {
-        console.log('Skipping CREATE DATABASE on non-local/shared hosting.');
+    if (!shouldAutoCreateDatabase(dbConfig.host)) {
+        console.log('Skipping CREATE DATABASE. Using configured database:', dbConfig.name);
         return;
     }
 
     try {
         const connection = await mysql.createConnection({
-            host: dbHost,
-            port: dbPort,
-            user: process.env.DB_USER || 'root',
-            password: process.env.DB_PASSWORD || ''
+            host: dbConfig.host,
+            port: dbConfig.port,
+            user: dbConfig.user,
+            password: dbConfig.password
         });
 
-        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\`;`);
+        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbConfig.name}\`;`);
         await connection.end();
     } catch (err) {
         console.warn('Database initialization warning:', err.message);
@@ -2978,13 +2994,13 @@ app.get('/api/about-software', (_req, res) => {
         success: true,
         aboutSoftware: records[0] || {
             id: 'ABOUT-SOFTWARE',
-            appName: 'American Lyceum',
-            schoolName: 'American Lyceum',
+            appName: 'Apex Group Of Schools',
+            schoolName: 'Apex Group Of Schools',
             website: 'https://YOUR-DOMAIN.com/',
             supportEmail: '',
-            supportPhone: '03174944258',
-            schoolAddress: 'Main tehsil Road near post office Sharaqpur Sharif district sheikhupura',
-            description: 'Student and teacher portal APIs for American Lyceum.',
+            supportPhone: '03461414335',
+            schoolAddress: 'Lajpat Road Shahdara Lahore',
+            description: 'Student and teacher portal APIs for Apex Group Of Schools.',
             version: '1.0.0'
         }
     });
@@ -3241,7 +3257,7 @@ function buildLocalAiAnswer(question = '', context = {}) {
 
 async function callOpenAiForSchoolAnswer(message, context) {
     const prompt = [
-        'You are American Lyceum portal assistant.',
+        'You are Apex Group Of Schools portal assistant.',
         'Answer in the same language style as the user. Most users write Roman Urdu.',
         'Use only the provided school system context. If exact data is not present, say that it is not available in the current system snapshot.',
         'Do not expose passwords, secrets, API keys, or hidden implementation details.',
@@ -3894,14 +3910,15 @@ async function startServer() {
     try {
         console.log('Initializing database...');
         await initializeDatabase();
+        const dbConfig = getDbConfig();
 
         sequelize = new Sequelize(
-            process.env.DB_NAME || 'school_system',
-            process.env.DB_USER || 'root',
-            process.env.DB_PASSWORD || '',
+            dbConfig.name,
+            dbConfig.user,
+            dbConfig.password,
             {
-                host: process.env.DB_HOST || 'localhost',
-                port: Number(process.env.DB_PORT || 3306),
+                host: dbConfig.host,
+                port: dbConfig.port,
                 dialect: 'mysql',
                 logging: false
             }
