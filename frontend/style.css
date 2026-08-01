@@ -3,16 +3,16 @@
 
 :root {
     --primary-color: #0f5e9c;
-    --primary-dark: #083a63;
-    --secondary-color: #4f6f8c;
+    --primary-dark: #083055;
+    --secondary-color: #18a957;
     --accent-color: #f2b21b;
-    --bg-color: #f4f8fc;
+    --bg-color: #eef4fb;
     --surface-color: #ffffff;
     --text-primary: #182433;
-    --text-secondary: #57708a;
+    --text-secondary: #5f7087;
     --success-color: #10b981;
     --danger-color: #c43b1d;
-    --border-color: #d9e6f2;
+    --border-color: #d6e2ee;
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -96,8 +96,10 @@ ul {
     display: flex;
     height: 100vh;
     width: 100%;
-    background: linear-gradient(135deg, rgba(15, 94, 156, 0.12), rgba(242, 178, 27, 0.12));
-    /* Logo theme background */
+    background:
+        radial-gradient(circle at 12% 18%, rgba(24, 169, 87, 0.14), transparent 22rem),
+        radial-gradient(circle at 88% 16%, rgba(15, 94, 156, 0.12), transparent 18rem),
+        linear-gradient(135deg, rgba(15, 94, 156, 0.12), rgba(242, 178, 27, 0.12));
     align-items: center;
     justify-content: center;
 }
@@ -114,8 +116,7 @@ ul {
 }
 
 .login-header {
-    background-color: var(--primary-color);
-    /* Primary theme color */
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color) 72%, var(--accent-color));
     padding: 2.5rem 2rem;
     text-align: center;
     color: white;
@@ -156,7 +157,7 @@ ul {
 }
 
 .login-icon-circle::after {
-    content: "Apex Group Of Schools\A Shahdara Lahore";
+    content: "Xmaxify School System\A Islamabad, Lahore";
     white-space: pre-line;
     color: #ffffff;
     font-size: 1.16rem;
@@ -264,7 +265,7 @@ ul {
 }
 
 .btn-success {
-    background-color: var(--primary-color);
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
     color: white;
     font-weight: 600;
     transition: background-color 0.2s;
@@ -275,7 +276,7 @@ ul {
 }
 
 .btn-success:hover {
-    background-color: var(--primary-dark);
+    background: linear-gradient(135deg, var(--primary-dark), #0c6f46);
 }
 
 .portal-quick-link {
@@ -450,7 +451,7 @@ ul {
 }
 
 .sidebar .logo-section::after {
-    content: "Apex Group Of Schools";
+    content: "Xmaxify School System";
     color: #ffffff;
     font-size: 0.9rem;
     font-weight: 800;

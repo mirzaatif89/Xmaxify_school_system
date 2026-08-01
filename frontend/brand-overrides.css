@@ -1,0 +1,745 @@
+/* Xmaxify brand override layer
+   Loaded after the existing page styles so it can modernize the UI without
+   rewriting every template. */
+
+:root {
+    --x-brand-blue: #0f5e9c;
+    --x-brand-blue-dark: #083a63;
+    --x-brand-green: #18a957;
+    --x-brand-green-dark: #0e7a3f;
+    --x-brand-gold: #f2b21b;
+    --x-brand-surface: #ffffff;
+    --x-brand-bg: #eef4fb;
+    --x-brand-text: #142132;
+    --x-brand-muted: #5f6f82;
+    --x-brand-line: #d6e2ee;
+    --x-brand-shadow: 0 20px 50px rgba(8, 58, 99, 0.16);
+    --x-brand-shadow-soft: 0 12px 30px rgba(8, 58, 99, 0.08);
+}
+
+body.xmaxify-home {
+    background:
+        radial-gradient(circle at 8% 10%, rgba(24, 169, 87, 0.15), transparent 24rem),
+        radial-gradient(circle at 95% 12%, rgba(15, 94, 156, 0.14), transparent 18rem),
+        linear-gradient(180deg, #ffffff 0%, #f3f8fd 52%, #ffffff 100%);
+    color: var(--x-brand-text);
+}
+
+body.xmaxify-home .site-header {
+    border-bottom: 1px solid rgba(214, 226, 238, 0.92);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(18px);
+}
+
+body.xmaxify-home .top-strip {
+    background: linear-gradient(90deg, var(--x-brand-blue-dark), var(--x-brand-green) 60%, var(--x-brand-gold));
+}
+
+body.xmaxify-home .brand {
+    gap: 0.85rem;
+}
+
+body.xmaxify-home .brand img {
+    width: 94px;
+    height: 56px;
+    padding: 0.2rem;
+    background: var(--x-brand-surface);
+    border-radius: 16px;
+    box-shadow: var(--x-brand-shadow-soft);
+}
+
+body.xmaxify-home .brand span {
+    font-size: 1.06rem;
+    line-height: 1.1;
+}
+
+body.xmaxify-home .nav-links {
+    color: #203247;
+}
+
+body.xmaxify-home .nav-login {
+    box-shadow: 0 14px 30px rgba(15, 94, 156, 0.22);
+}
+
+body.xmaxify-home .hero {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 20% 18%, rgba(24, 169, 87, 0.14), transparent 18rem),
+        radial-gradient(circle at 80% 12%, rgba(15, 94, 156, 0.12), transparent 16rem),
+        linear-gradient(135deg, #ffffff 0%, #f5f9fe 45%, #eef7fb 100%);
+}
+
+body.xmaxify-home .hero::before {
+    content: "";
+    position: absolute;
+    inset: -12rem auto auto -8rem;
+    width: 20rem;
+    height: 20rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(24, 169, 87, 0.18), transparent 68%);
+    pointer-events: none;
+}
+
+body.xmaxify-home .hero::after {
+    content: "";
+    position: absolute;
+    right: -6rem;
+    bottom: -6rem;
+    width: 18rem;
+    height: 18rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(15, 94, 156, 0.14), transparent 66%);
+    pointer-events: none;
+}
+
+body.xmaxify-home .hero-panel,
+body.xmaxify-home .hero-media,
+body.xmaxify-home .quick-strip article,
+body.xmaxify-home .about-cards article,
+body.xmaxify-home .program-grid article,
+body.xmaxify-home .showcase-card,
+body.xmaxify-home .portal-section,
+body.xmaxify-home .campus-grid article,
+body.xmaxify-home .contact-grid a,
+body.xmaxify-home .principal-message,
+body.xmaxify-home .director-message,
+body.xmaxify-home .inquiry-form {
+    border-radius: 22px;
+    box-shadow: var(--x-brand-shadow-soft);
+}
+
+body.xmaxify-home .hero-panel {
+    position: relative;
+    z-index: 1;
+    padding-right: clamp(0rem, 2vw, 0.5rem);
+}
+
+body.xmaxify-home .hero h1 {
+    color: var(--x-brand-blue-dark);
+    text-wrap: balance;
+}
+
+body.xmaxify-home .hero-panel p:not(.eyebrow) {
+    color: #4a5d71;
+    max-width: 34rem;
+}
+
+body.xmaxify-home .primary-action,
+body.xmaxify-home .inquiry-form button,
+body.xmaxify-home .portal-actions a:first-child {
+    background: linear-gradient(135deg, var(--x-brand-blue-dark), var(--x-brand-green) 78%, var(--x-brand-gold));
+    border-color: transparent;
+    box-shadow: 0 16px 36px rgba(8, 58, 99, 0.18);
+}
+
+body.xmaxify-home .secondary-action {
+    border-color: rgba(15, 94, 156, 0.18);
+    background: rgba(255, 255, 255, 0.82);
+}
+
+body.xmaxify-home .hero-media {
+    border: 1px solid rgba(15, 94, 156, 0.14);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(245, 249, 254, 0.94)),
+        #ffffff;
+}
+
+body.xmaxify-home .hero-logo-card {
+    border-radius: 24px;
+    padding: 1.1rem;
+    border-color: rgba(15, 94, 156, 0.12);
+}
+
+body.xmaxify-home .hero-spotlight-grid article {
+    background: linear-gradient(180deg, #ffffff, #f7fbff);
+}
+
+body.xmaxify-home .quick-strip {
+    margin-top: -1.6rem;
+}
+
+body.xmaxify-home .quick-strip article strong,
+body.xmaxify-home .section-heading h2,
+body.xmaxify-home .showcase-card-head h3,
+body.xmaxify-home .program-grid h3,
+body.xmaxify-home .campus-grid strong,
+body.xmaxify-home .site-footer strong {
+    color: var(--x-brand-blue-dark);
+}
+
+body.xmaxify-home .quick-strip span,
+body.xmaxify-home .section-heading p:not(.eyebrow),
+body.xmaxify-home .admission-copy p,
+body.xmaxify-home .portal-section p,
+body.xmaxify-home .program-grid p,
+body.xmaxify-home .campus-grid span,
+body.xmaxify-home .contact-grid span,
+body.xmaxify-home .principal-message p,
+body.xmaxify-home .director-message p,
+body.xmaxify-home .site-footer span {
+    color: var(--x-brand-muted);
+}
+
+body.xmaxify-home .showcase-grid {
+    gap: 1.15rem;
+}
+
+body.xmaxify-home .showcase-card {
+    border: 1px solid var(--x-brand-line);
+    background:
+        radial-gradient(circle at top right, rgba(24, 169, 87, 0.08), transparent 13rem),
+        linear-gradient(180deg, #ffffff, #f7fbff);
+}
+
+body.xmaxify-home .portrait-grid article {
+    border-radius: 18px;
+    box-shadow: 0 12px 24px rgba(8, 58, 99, 0.08);
+}
+
+body.xmaxify-home .portrait-grid img {
+    background: #f2f7fc;
+}
+
+body.xmaxify-home .portal-section {
+    background: linear-gradient(135deg, var(--x-brand-blue-dark), var(--x-brand-green) 72%, var(--x-brand-gold));
+}
+
+body.xmaxify-home .portal-actions a {
+    box-shadow: none;
+}
+
+body.xmaxify-home .campus-section {
+    background:
+        radial-gradient(circle at top left, rgba(24, 169, 87, 0.07), transparent 14rem),
+        #ffffff;
+}
+
+body.xmaxify-home .site-footer {
+    background: linear-gradient(180deg, #ffffff, #f7fbff);
+}
+
+body.xmaxify-home .floating-whatsapp {
+    background: linear-gradient(135deg, var(--x-brand-green), var(--x-brand-blue-dark));
+    box-shadow: 0 18px 36px rgba(8, 58, 99, 0.22);
+}
+
+body.xmaxify-home .floating-whatsapp svg {
+    width: 28px;
+    height: 28px;
+}
+
+body.xmaxify-home .about-layout > img,
+body.xmaxify-home .principal-photo,
+body.xmaxify-home .director-photo {
+    border-color: rgba(15, 94, 156, 0.12);
+}
+
+body.xmaxify-home .contact-grid a {
+    background: linear-gradient(180deg, #ffffff, #f8fbfe);
+}
+
+body.xmaxify-home .whatsapp-contact {
+    background: linear-gradient(135deg, #18a957, #0f766e) !important;
+}
+
+body.xmaxify-home .hero-campus-note span {
+    border-color: rgba(15, 94, 156, 0.12);
+}
+
+body.xmaxify-home .hero-media::before,
+body.xmaxify-home .showcase-card::before {
+    content: "";
+    position: absolute;
+    inset: auto auto 0 0;
+    pointer-events: none;
+}
+
+body.xmaxify-home .site-header,
+body.xmaxify-home .portal-section,
+body.xmaxify-home .campus-section,
+body.xmaxify-home .program-section {
+    backdrop-filter: saturate(150%);
+}
+
+body.xmaxify-home .showcase-card,
+body.xmaxify-home .hero-media {
+    position: relative;
+    overflow: hidden;
+}
+
+body.xmaxify-home .showcase-card::after {
+    content: "";
+    position: absolute;
+    top: -4rem;
+    right: -4rem;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(242, 178, 27, 0.12), transparent 70%);
+    pointer-events: none;
+}
+
+body.xmaxify-home .section-shell,
+body.xmaxify-home .principal-section,
+body.xmaxify-home .director-section,
+body.xmaxify-home .admission-section,
+body.xmaxify-home .portal-section {
+    width: min(1180px, calc(100% - 32px));
+}
+
+body.xmaxify-home .hero {
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.92fr);
+}
+
+body.xmaxify-home .hero-media {
+    min-height: 452px;
+}
+
+body.xmaxify-home .hero-logo-card {
+    box-shadow: 0 22px 42px rgba(8, 58, 99, 0.12);
+}
+
+body.xmaxify-home .hero-spotlight-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body.xmaxify-home .section-heading.centered,
+body.xmaxify-home .section-heading.compact {
+    max-width: 740px;
+}
+
+body.xmaxify-home .program-grid img {
+    background: linear-gradient(180deg, #ffffff, #f8fbff);
+}
+
+body.xmaxify-home .principal-lead {
+    color: var(--x-brand-blue-dark) !important;
+}
+
+body.xmaxify-home .director-message::before {
+    color: rgba(15, 94, 156, 0.06);
+}
+
+body.xmaxify-home .hero h1,
+body.xmaxify-home .section-heading h2,
+body.xmaxify-home .showcase-card-head h3 {
+    letter-spacing: -0.03em;
+}
+
+/* Student portal */
+body.xmaxify-student-portal,
+body.xmaxify-teacher-portal {
+    background:
+        radial-gradient(circle at 10% 12%, rgba(24, 169, 87, 0.12), transparent 22rem),
+        radial-gradient(circle at 92% 0%, rgba(15, 94, 156, 0.12), transparent 18rem),
+        linear-gradient(180deg, #eef5fb 0%, #f8fbff 42%, #edf5f9 100%);
+}
+
+body.xmaxify-student-portal .portal-header,
+body.xmaxify-teacher-portal .teacher-portal-header {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border-bottom: 1px solid rgba(214, 226, 238, 0.92) !important;
+    box-shadow: 0 12px 30px rgba(8, 58, 99, 0.08);
+    backdrop-filter: blur(16px);
+}
+
+body.xmaxify-student-portal .portal-container,
+body.xmaxify-teacher-portal .teacher-portal {
+    width: min(1180px, calc(100% - 28px));
+    max-width: none;
+}
+
+body.xmaxify-student-portal .portal-brand,
+body.xmaxify-teacher-portal .portal-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+body.xmaxify-student-portal .portal-brand strong,
+body.xmaxify-teacher-portal .portal-brand strong {
+    display: block;
+    color: var(--x-brand-blue-dark);
+    font-family: "Manrope", "Inter", sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: -0.02em;
+}
+
+body.xmaxify-student-portal .portal-brand span,
+body.xmaxify-teacher-portal .portal-brand span {
+    display: block;
+    color: var(--x-brand-muted);
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+body.xmaxify-student-portal .portal-logo,
+body.xmaxify-teacher-portal .portal-logo {
+    width: 158px;
+    height: 60px;
+}
+
+body.xmaxify-student-portal .portal-header .portal-menu-btn,
+body.xmaxify-teacher-portal .portal-header .portal-menu-btn,
+body.xmaxify-student-portal .logout-btn,
+body.xmaxify-teacher-portal .logout-btn,
+body.xmaxify-student-portal .student-portal-menu-button,
+body.xmaxify-teacher-portal .portal-menu-btn,
+body.xmaxify-student-portal .student-notification-button,
+body.xmaxify-student-portal .student-action-btn,
+body.xmaxify-teacher-portal .teacher-option-btn,
+body.xmaxify-student-portal .portal-screen-back,
+body.xmaxify-teacher-portal .portal-btn {
+    border-radius: 16px;
+}
+
+body.xmaxify-student-portal .portal-welcome-strip,
+body.xmaxify-teacher-portal .profile-card {
+    background:
+        linear-gradient(135deg, var(--x-brand-blue-dark), var(--x-brand-green) 75%, var(--x-brand-gold)) !important;
+    color: #ffffff !important;
+    border: 0 !important;
+    box-shadow: var(--x-brand-shadow);
+}
+
+body.xmaxify-student-portal .portal-welcome-strip h1,
+body.xmaxify-teacher-portal .profile-main h2,
+body.xmaxify-student-portal .user-card h2,
+body.xmaxify-teacher-portal .profile-card h2 {
+    color: #ffffff !important;
+    letter-spacing: -0.03em;
+}
+
+body.xmaxify-student-portal .portal-welcome-strip p,
+body.xmaxify-teacher-portal .muted,
+body.xmaxify-student-portal .user-card p,
+body.xmaxify-teacher-portal .profile-card .muted {
+    color: rgba(255, 255, 255, 0.88) !important;
+}
+
+body.xmaxify-student-portal .portal-date-chip,
+body.xmaxify-student-portal .student-notification-button,
+body.xmaxify-student-portal .meta-pill,
+body.xmaxify-student-portal .status-badge,
+body.xmaxify-teacher-portal .meta-pill,
+body.xmaxify-teacher-portal .teacher-option-btn,
+body.xmaxify-teacher-portal .portal-menu-item {
+    border: 1px solid rgba(214, 226, 238, 0.85);
+    background: rgba(255, 255, 255, 0.88);
+    color: var(--x-brand-blue-dark);
+    box-shadow: var(--x-brand-shadow-soft);
+}
+
+body.xmaxify-student-portal .user-card,
+body.xmaxify-student-portal .stats-grid > *,
+body.xmaxify-student-portal .portal-ad-card,
+body.xmaxify-student-portal .student-portal-section,
+body.xmaxify-student-portal .panel-card,
+body.xmaxify-student-portal .portal-module-heading,
+body.xmaxify-student-portal .student-action-btn,
+body.xmaxify-student-portal .student-notification-panel,
+body.xmaxify-student-portal .portal-screen-back,
+body.xmaxify-student-portal .info-row,
+body.xmaxify-student-portal .fee-line,
+body.xmaxify-student-portal .mini-stat,
+body.xmaxify-teacher-portal .stat-card,
+body.xmaxify-teacher-portal .panel-card,
+body.xmaxify-teacher-portal .stat-card,
+body.xmaxify-teacher-portal .portal-ad-card,
+body.xmaxify-teacher-portal .teacher-option-btn,
+body.xmaxify-teacher-portal .portal-mini-grid > *,
+body.xmaxify-teacher-portal .portal-menu,
+body.xmaxify-teacher-portal .attendance-day-tile,
+body.xmaxify-teacher-portal .notice-list,
+body.xmaxify-teacher-portal .portal-field,
+body.xmaxify-teacher-portal input,
+body.xmaxify-teacher-portal textarea,
+body.xmaxify-teacher-portal select {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(214, 226, 238, 0.95);
+    box-shadow: var(--x-brand-shadow-soft);
+}
+
+body.xmaxify-student-portal .user-avatar,
+body.xmaxify-teacher-portal .avatar {
+    background: linear-gradient(135deg, var(--x-brand-blue-dark), var(--x-brand-green)) !important;
+    color: #ffffff !important;
+    box-shadow: 0 18px 36px rgba(8, 58, 99, 0.18);
+}
+
+body.xmaxify-student-portal .student-action-grid,
+body.xmaxify-teacher-portal .teacher-options,
+body.xmaxify-student-portal .stats-grid,
+body.xmaxify-teacher-portal .stats-grid {
+    gap: 1rem;
+}
+
+body.xmaxify-student-portal .student-action-btn,
+body.xmaxify-teacher-portal .teacher-option-btn {
+    min-height: 68px;
+    color: var(--x-brand-blue-dark);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+
+body.xmaxify-student-portal .student-action-btn:hover,
+body.xmaxify-teacher-portal .teacher-option-btn:hover {
+    background: linear-gradient(135deg, var(--x-brand-blue-dark), var(--x-brand-green)) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px rgba(8, 58, 99, 0.18);
+}
+
+body.xmaxify-student-portal .student-action-btn:hover i,
+body.xmaxify-teacher-portal .teacher-option-btn:hover i {
+    color: #ffffff !important;
+}
+
+body.xmaxify-student-portal .stats-grid .stat-box,
+body.xmaxify-teacher-portal .stat-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    border: 1px solid rgba(214, 226, 238, 0.9);
+}
+
+body.xmaxify-student-portal .stats-grid .stat-box::after,
+body.xmaxify-teacher-portal .stat-card::after {
+    content: "";
+    position: absolute;
+    right: -24px;
+    top: -24px;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(24, 169, 87, 0.12), transparent 70%);
+}
+
+body.xmaxify-student-portal .portal-grid,
+body.xmaxify-teacher-portal .portal-grid {
+    gap: 1.15rem;
+}
+
+body.xmaxify-student-portal .panel-card,
+body.xmaxify-teacher-portal .panel-card {
+    border-radius: 20px;
+}
+
+body.xmaxify-student-portal .portal-ad-card,
+body.xmaxify-teacher-portal .portal-ad-card {
+    border-radius: 20px;
+}
+
+body.xmaxify-student-portal .student-notification-panel,
+body.xmaxify-teacher-portal .portal-menu {
+    border-radius: 18px;
+}
+
+body.xmaxify-student-portal .student-attendance-day,
+body.xmaxify-teacher-portal .attendance-day-tile {
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff, #f7fbff);
+}
+
+body.xmaxify-student-portal .student-fee-month-field select,
+body.xmaxify-student-portal .student-attendance-month-field input,
+body.xmaxify-teacher-portal .attendance-month-field input {
+    min-height: 46px;
+    border-radius: 14px;
+}
+
+body.xmaxify-student-portal .portal-profile-side,
+body.xmaxify-teacher-portal .portal-header-actions {
+    gap: 0.8rem;
+}
+
+body.xmaxify-student-portal .portal-status-card {
+    border: 1px solid rgba(214, 226, 238, 0.92);
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body.xmaxify-student-portal .status-badge.status-paid,
+body.xmaxify-student-portal .status-badge.status-pending,
+body.xmaxify-student-portal .status-badge.status-failed {
+    background: rgba(24, 169, 87, 0.12);
+    color: var(--x-brand-green-dark);
+    border-color: rgba(24, 169, 87, 0.18);
+}
+
+body.xmaxify-student-portal .portal-module-heading h2,
+body.xmaxify-teacher-portal .panel-card h3,
+body.xmaxify-student-portal .student-portal-section h3 {
+    color: var(--x-brand-blue-dark);
+}
+
+body.xmaxify-student-portal .student-portal-menu,
+body.xmaxify-teacher-portal .portal-menu {
+    background: rgba(255, 255, 255, 0.96);
+}
+
+body.xmaxify-student-portal .student-portal-menu-item,
+body.xmaxify-teacher-portal .portal-menu-item {
+    border-radius: 12px;
+}
+
+body.xmaxify-student-portal .student-portal-menu-item:hover,
+body.xmaxify-teacher-portal .portal-menu-item:hover {
+    background: rgba(24, 169, 87, 0.08);
+    color: var(--x-brand-blue-dark);
+}
+
+body.xmaxify-student-portal .empty-note,
+body.xmaxify-teacher-portal .empty-note,
+body.xmaxify-student-portal .notice-list,
+body.xmaxify-teacher-portal .notice-list {
+    border-radius: 16px;
+}
+
+body.xmaxify-student-portal .portal-top-actions {
+    gap: 0.7rem;
+}
+
+body.xmaxify-student-portal .portal-date-chip {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+body.xmaxify-student-portal .student-notification-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+}
+
+body.xmaxify-student-portal .student-notification-count {
+    background: var(--x-brand-gold);
+    color: #1f2937;
+}
+
+body.xmaxify-student-portal .portal-shell {
+    padding-bottom: 2rem;
+}
+
+body.xmaxify-student-portal .student-action-grid,
+body.xmaxify-teacher-portal .teacher-options {
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+}
+
+body.xmaxify-student-portal .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+body.xmaxify-teacher-portal .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+body.xmaxify-teacher-portal .portal-mini-grid > *,
+body.xmaxify-student-portal .mini-stat {
+    border-radius: 16px;
+}
+
+body.xmaxify-teacher-portal .portal-ad-content span,
+body.xmaxify-home .eyebrow {
+    color: var(--x-brand-green-dark);
+}
+
+body.xmaxify-teacher-portal .logout-btn,
+body.xmaxify-student-portal .logout-btn {
+    background: linear-gradient(135deg, var(--x-brand-blue-dark), var(--x-brand-green)) !important;
+    color: #ffffff !important;
+    border: 0 !important;
+}
+
+body.xmaxify-teacher-portal .logout-btn:hover,
+body.xmaxify-student-portal .logout-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 30px rgba(8, 58, 99, 0.2);
+}
+
+@media (max-width: 1024px) {
+    body.xmaxify-home .hero,
+    body.xmaxify-student-portal .portal-grid,
+    body.xmaxify-teacher-portal .portal-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.xmaxify-home .showcase-grid,
+    body.xmaxify-home .hero-spotlight-grid,
+    body.xmaxify-student-portal .student-action-grid,
+    body.xmaxify-teacher-portal .teacher-options,
+    body.xmaxify-student-portal .stats-grid,
+    body.xmaxify-teacher-portal .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 760px) {
+    body.xmaxify-home .hero {
+        padding: 12px 12px 2rem;
+    }
+
+    body.xmaxify-home .hero-media {
+        min-height: 0;
+    }
+
+    body.xmaxify-home .hero-spotlight-grid,
+    body.xmaxify-home .showcase-grid,
+    body.xmaxify-student-portal .student-action-grid,
+    body.xmaxify-teacher-portal .teacher-options,
+    body.xmaxify-student-portal .stats-grid,
+    body.xmaxify-teacher-portal .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.xmaxify-student-portal .portal-header,
+    body.xmaxify-teacher-portal .teacher-portal-header {
+        gap: 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    body.xmaxify-student-portal .portal-brand,
+    body.xmaxify-teacher-portal .portal-brand {
+        gap: 0.65rem;
+    }
+
+    body.xmaxify-student-portal .portal-logo,
+    body.xmaxify-teacher-portal .portal-logo {
+        width: 132px;
+        height: 54px;
+    }
+
+    body.xmaxify-student-portal .portal-container,
+    body.xmaxify-teacher-portal .teacher-portal {
+        width: min(100%, calc(100% - 20px));
+    }
+}
+
+@media (max-width: 480px) {
+    body.xmaxify-home .brand img {
+        width: 76px;
+        height: 46px;
+    }
+
+    body.xmaxify-home .hero-logo-card {
+        grid-template-columns: 72px minmax(0, 1fr);
+    }
+
+    body.xmaxify-student-portal .portal-header,
+    body.xmaxify-teacher-portal .teacher-portal-header {
+        padding-inline: 12px;
+    }
+
+    body.xmaxify-student-portal .portal-menu-btn,
+    body.xmaxify-teacher-portal .portal-menu-btn,
+    body.xmaxify-student-portal .logout-btn,
+    body.xmaxify-teacher-portal .logout-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    body.xmaxify-home .section-shell,
+    body.xmaxify-home .principal-section,
+    body.xmaxify-home .director-section,
+    body.xmaxify-home .admission-section,
+    body.xmaxify-home .portal-section {
+        width: min(100%, calc(100% - 18px));
+    }
+}

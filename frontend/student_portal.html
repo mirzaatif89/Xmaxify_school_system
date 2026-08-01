@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal - EduCore</title>
+    <title>Xmaxify School System - Student Portal</title>
     <link rel="icon" type="image/png" href="images/logo.jpeg">
     <link rel="stylesheet" href="style.css?v=20260627-welcome-logo">
     <link rel="stylesheet" href="ai-chat.css">
@@ -2382,11 +2382,18 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="brand-overrides.css?v=20260802-xmaxify-brand">
 </head>
 
-<body>
+<body class="xmaxify-student-portal">
     <header class="portal-header">
-        <img class="portal-logo" src="images/logo.jpeg" alt="Apex Group Of Schools logo">
+        <div class="portal-brand">
+            <img class="portal-logo" src="images/logo.jpeg" alt="Xmaxify School System logo">
+            <div>
+                <strong>Xmaxify School System</strong>
+                <span>Student Portal</span>
+            </div>
+        </div>
         <button class="portal-menu-btn" type="button" onclick="logout()" title="Logout" aria-label="Logout">
             <i data-lucide="log-out" width="16"></i>
             Logout
@@ -2984,14 +2991,14 @@
         function getPortalBrandingSettings() {
             try {
                 return {
-                    schoolName: 'Apex Group Of Schools',
-                    schoolTitle: 'Apex Group Of Schools',
-                    phone: '03461414335', address: 'Lajpat Road Shahdara Lahore', schoolAddress: 'Lajpat Road Shahdara Lahore',
+                    schoolName: 'Xmaxify School System',
+                    schoolTitle: 'Xmaxify School System',
+                    phone: '+92 323 6150006', address: 'Islamabad, Lahore', schoolAddress: 'Islamabad, Lahore',
                     logoDataUrl: '',
                     ...(JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS) || '{}') || {})
                 };
             } catch (_error) {
-                return { schoolName: 'Apex Group Of Schools', schoolTitle: 'Apex Group Of Schools', phone: '03461414335', address: 'Lajpat Road Shahdara Lahore', schoolAddress: 'Lajpat Road Shahdara Lahore', logoDataUrl: '' };
+                return { schoolName: 'Xmaxify School System', schoolTitle: 'Xmaxify School System', phone: '+92 323 6150006', address: 'Islamabad, Lahore', schoolAddress: 'Islamabad, Lahore', logoDataUrl: '' };
             }
         }
 
@@ -3091,7 +3098,7 @@
             `).join('');
             const logoMarkup = logoDataUrl
                 ? `<img class="logo" src="${logoDataUrl}" alt="School logo">`
-                : '<div class="logo-fallback">APEXIUMS<\/div>';
+                : '<div class="logo-fallback">XMAXIFY<\/div>';
 
             return `<!DOCTYPE html>
 <html lang="en">
@@ -3142,7 +3149,7 @@
             <\/thead>
             <tbody>${subjectBlocks}<\/tbody>
         <\/table>
-        <div class="footer">Apex Group Of Schools<\/div>
+        <div class="footer">Xmaxify School System<\/div>
     <\/main>
 <\/body>
 <\/html>`;
@@ -5146,7 +5153,7 @@
         function getStudentBranchContactDetails(_campusName) {
             return {
                 campusLabel: 'Shahdara Campus',
-                contactLine: 'Address: Lajpat Road Shahdara Lahore | Phone: 03461414335'
+                contactLine: 'Address: Islamabad, Lahore | Phone: +92 323 6150006'
             };
         }
 
