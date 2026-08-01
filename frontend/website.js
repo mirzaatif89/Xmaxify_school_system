@@ -10,7 +10,7 @@ const ADMISSION_FORM_SETTINGS_KEY = 'eduCore_admission_form_settings';
 const DEFAULT_ADMISSION_FORM_SETTINGS = {
     title: 'Apply online for admission.',
     description: 'Fill the admission form and the school office will receive your application in the portal.',
-    campuses: ['Shahdara Campus'],
+    campuses: ['Islamabad, Lahore'],
     fields: {
         studentName: { label: 'Student Name', placeholder: 'Student full name', required: true, visible: true },
         parentName: { label: 'Parent Name', placeholder: 'Father / guardian name', required: true, visible: true },
@@ -47,8 +47,8 @@ async function getJson(endpoint, fallback) {
 }
 
 function renderContact() {
-    setText('headerAddress', 'Lajpat Road Shahdara Lahore');
-    setText('contactAddress', 'Main Campus, Lajpat Road Shahdara Lahore');
+    setText('headerAddress', 'Islamabad, Lahore');
+    setText('contactAddress', 'Islamabad, Lahore');
 }
 
 function renderBanners() {
@@ -78,10 +78,10 @@ function renderBanners() {
             ? `<a class="website-banner-media" href="${escapeHtml(banner.linkUrl)}">${image}</a>`
             : `<div class="website-banner-media">${image}</div>`;
         return `
-            <article class="website-banner-slide${index === activeBannerIndex ? ' active' : ''}" data-banner-slide="${index}">
+                    <article class="website-banner-slide${index === activeBannerIndex ? ' active' : ''}" data-banner-slide="${index}">
                 ${media}
                 <div class="website-banner-caption">
-                    <h2>${escapeHtml(text(banner.title, 'Apex Group Of Schools'))}</h2>
+                    <h2>${escapeHtml(text(banner.title, 'Xmaxify School System'))}</h2>
                     ${text(banner.subtitle, '') ? `<p>${escapeHtml(banner.subtitle)}</p>` : ''}
                 </div>
             </article>

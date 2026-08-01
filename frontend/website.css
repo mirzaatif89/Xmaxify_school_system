@@ -71,6 +71,7 @@ svg {
 .top-strip {
     min-height: 34px;
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 1.2rem;
@@ -109,8 +110,8 @@ svg {
 }
 
 .brand img {
-    width: 92px;
-    height: 48px;
+    width: 88px;
+    height: 52px;
     object-fit: contain;
     display: block;
 }
@@ -278,7 +279,9 @@ h3 {
     min-width: 0;
     min-height: 430px;
     display: grid;
-    place-items: center;
+    gap: 1rem;
+    align-content: center;
+    padding: 1rem;
     overflow: hidden;
     border: 1px solid rgba(15, 94, 156, 0.16);
     border-radius: 22px;
@@ -288,12 +291,81 @@ h3 {
     box-shadow: 0 24px 60px rgba(8, 58, 99, 0.18);
 }
 
-.hero-media img {
-    width: min(92%, 620px);
+.hero-logo-card {
+    display: grid;
+    grid-template-columns: minmax(96px, 126px) minmax(0, 1fr);
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 18px;
+    border: 1px solid rgba(15, 94, 156, 0.12);
+    background:
+        radial-gradient(circle at top left, rgba(242, 178, 27, 0.16), transparent 9rem),
+        linear-gradient(145deg, #ffffff, #f5f9fe);
+    box-shadow: 0 18px 40px rgba(8, 58, 99, 0.12);
+}
+
+.hero-logo-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
     height: auto;
     min-height: 0;
     display: block;
     object-fit: contain;
+    border-radius: 18px;
+    background: #ffffff;
+    padding: 0.55rem;
+}
+
+.hero-logo-card strong,
+.hero-logo-card span {
+    display: block;
+}
+
+.hero-logo-card strong {
+    color: var(--blue-dark);
+    font-family: "Manrope", "Inter", sans-serif;
+    font-size: clamp(1.15rem, 2vw, 1.55rem);
+    line-height: 1.1;
+}
+
+.hero-logo-card span {
+    margin-top: 0.3rem;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.hero-spotlight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+}
+
+.hero-spotlight-grid article {
+    min-height: 132px;
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding: 1rem;
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    background: #ffffff;
+    box-shadow: 0 12px 28px rgba(16, 32, 51, 0.07);
+}
+
+.hero-spotlight-grid svg {
+    color: var(--gold-dark);
+}
+
+.hero-spotlight-grid strong {
+    color: var(--blue-dark);
+    font-family: "Manrope", "Inter", sans-serif;
+    font-size: 1rem;
+}
+
+.hero-spotlight-grid span {
+    color: var(--muted);
+    font-size: 0.92rem;
 }
 
 .quick-strip {
@@ -474,6 +546,76 @@ h3 {
 
 .program-grid p {
     margin: 0 1rem 1.15rem;
+}
+
+.showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.showcase-card {
+    padding: 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: linear-gradient(180deg, #ffffff, #f7fbff);
+    box-shadow: var(--shadow);
+}
+
+.showcase-card-students {
+    background:
+        radial-gradient(circle at top right, rgba(242, 178, 27, 0.1), transparent 13rem),
+        linear-gradient(180deg, #ffffff, #f5f9fe);
+}
+
+.showcase-card-head {
+    margin-bottom: 1rem;
+}
+
+.showcase-card-head h3 {
+    margin-top: 0.3rem;
+    color: var(--blue-dark);
+    font-size: 1.25rem;
+}
+
+.portrait-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.portrait-grid article {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(16, 32, 51, 0.07);
+}
+
+.portrait-grid img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    background: #eef5fb;
+}
+
+.portrait-grid article div {
+    padding: 0.8rem 0.85rem 0.95rem;
+}
+
+.portrait-grid strong {
+    display: block;
+    color: var(--blue-dark);
+    font-family: "Manrope", "Inter", sans-serif;
+    font-size: 0.98rem;
+}
+
+.portrait-grid span {
+    display: block;
+    margin-top: 0.2rem;
+    color: var(--muted);
+    font-size: 0.88rem;
 }
 
 .principal-section,
@@ -849,11 +991,10 @@ h3 {
     box-shadow: 0 16px 34px rgba(16, 32, 51, 0.24);
 }
 
-.floating-whatsapp img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+.floating-whatsapp svg {
+    width: 30px;
+    height: 30px;
+    color: #ffffff;
 }
 
 .website-banner-section {
@@ -874,9 +1015,17 @@ h3 {
         padding-top: 1.2rem;
     }
 
-    .hero-media,
-    .hero-media img {
-        min-height: 430px;
+    .hero-media {
+        min-height: 0;
+    }
+
+    .hero-spotlight-grid,
+    .showcase-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .portrait-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .quick-strip,
@@ -964,13 +1113,18 @@ h3 {
     .hero-media {
         order: 2;
         width: 100%;
-        min-height: 260px;
+        min-height: 0;
         border-radius: 18px;
     }
 
-    .hero-media img {
-        min-height: 260px;
-        padding: 0.9rem;
+    .hero-logo-card {
+        grid-template-columns: 88px minmax(0, 1fr);
+        gap: 0.85rem;
+        padding: 0.85rem;
+    }
+
+    .hero-logo-card img {
+        padding: 0.4rem;
     }
 
     .hero-panel {
@@ -1077,6 +1231,10 @@ h3 {
         scroll-snap-align: start;
     }
 
+    .portrait-grid {
+        grid-template-columns: 1fr;
+    }
+
     .inquiry-form {
         grid-template-columns: 1fr;
     }
@@ -1095,9 +1253,8 @@ h3 {
 }
 
 @media (max-width: 460px) {
-    .hero-media,
-    .hero-media img {
-        min-height: 285px;
+    .hero-media {
+        min-height: 0;
     }
 
     .section-heading h2,
