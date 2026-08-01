@@ -89,6 +89,15 @@ svg {
     gap: 0.4rem;
 }
 
+.whatsapp-link img,
+.whatsapp-action img {
+    width: 18px;
+    height: 18px;
+    object-fit: contain;
+    display: block;
+    flex: 0 0 auto;
+}
+
 .main-nav {
     width: var(--wrap);
     min-height: 72px;
@@ -995,6 +1004,13 @@ h3 {
     width: 30px;
     height: 30px;
     color: #ffffff;
+}
+
+.floating-whatsapp img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    display: block;
 }
 
 .website-banner-section {

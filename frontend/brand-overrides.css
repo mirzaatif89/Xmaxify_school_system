@@ -39,6 +39,28 @@ body.xmaxify-teacher-portal .portal-logo {
     border-radius: 14px;
 }
 
+body.xmaxify-home .whatsapp-link,
+body.xmaxify-home .whatsapp-action {
+    gap: 0.45rem;
+}
+
+body.xmaxify-home .whatsapp-link img,
+body.xmaxify-home .whatsapp-action img,
+body.xmaxify-home .floating-whatsapp img {
+    object-fit: contain;
+}
+
+body.xmaxify-home .whatsapp-link img,
+body.xmaxify-home .whatsapp-action img {
+    width: 18px;
+    height: 18px;
+}
+
+body.xmaxify-home .floating-whatsapp img {
+    width: 34px;
+    height: 34px;
+}
+
 body.xmaxify-home .brand span,
 body.xmaxify-student-portal .portal-brand strong,
 body.xmaxify-teacher-portal .portal-brand strong {
