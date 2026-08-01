@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Import - Apex Group Of Schools</title>
+    <link rel="icon" type="image/png" href="images/logo.jpeg">
+    <link rel="stylesheet" href="style.css?v=20260603-american-lyceum-brand">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        .module-shell {
+            display: grid;
+            gap: 1rem;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: minmax(320px, 0.8fr) minmax(420px, 1.2fr);
+            gap: 1rem;
+            align-items: start;
+        }
+        .module-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            box-shadow: var(--shadow-sm);
+            padding: 1rem;
+        }
+        .module-card h2,
+        .module-card h3 {
+            margin: 0 0 0.75rem;
+        }
+        .field {
+            display: grid;
+            gap: 0.35rem;
+            margin-bottom: 0.9rem;
+        }
+        .field label {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.65rem 0.85rem;
+            font: inherit;
+            background: #fff;
+        }
+        .field textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+        .actions {
+            display: flex;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.85rem;
+        }
+        .summary-card {
+            border: 1px solid #dfe7ef;
+            border-radius: 14px;
+            background: linear-gradient(180deg, #fff 0%, #f7fbfd 100%);
+            padding: 0.95rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .summary-card span {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .summary-card strong {
+            display: block;
+            margin-top: 0.35rem;
+            font-size: 1.4rem;
+        }
+        .table-wrap {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            min-width: 960px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.7rem 0.75rem;
+            border-bottom: 1px solid #e5ecf3;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: #f8fafc;
+        }
+        .status {
+            display: inline-flex;
+            padding: 0.22rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            background: #e0f2fe;
+            color: #075985;
+        }
+        .status.success { background: #dcfce7; color: #166534; }
+        .status.warning { background: #fef3c7; color: #92400e; }
+        .status.danger { background: #fee2e2; color: #991b1b; }
+        .note {
+            border: 1px dashed #cbd5e1;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        @media (max-width: 960px) {
+            .module-grid,
+            .summary-grid,
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo-section">
+            <img class="sidebar-logo-img" src="images/logo.jpeg" alt="Apex Group Of Schools logo">
+        </div>
+        <nav class="nav-links"></nav>
+        <a href="settings.html" class="user-profile">
+            <div class="avatar">AD</div>
+            <div class="user-info"><h4>Admin User</h4><p>Principal</p></div>
+        </a>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Bulk Import / Export</h1>
+                <p style="color: var(--text-secondary); margin-top: 0.25rem;">Download a template, fill students or staff in Excel, and upload in one click.</p>
+            </div>
+        </header>
+
+        <section class="summary-grid">
+            <article class="summary-card"><span>Students</span><strong id="studentImportCount">0</strong></article>
+            <article class="summary-card"><span>Staff</span><strong id="staffImportCount">0</strong></article>
+            <article class="summary-card"><span>Campus</span><strong id="importCampusName">All</strong></article>
+            <article class="summary-card"><span>Status</span><strong id="importStatusSummary">Ready</strong></article>
+        </section>
+
+        <section class="module-grid">
+            <article class="module-card">
+                <h2>Import Settings</h2>
+                <div class="field">
+                    <label for="importEntity">Import Type</label>
+                    <select id="importEntity">
+                        <option value="students">Students</option>
+                        <option value="staff">Staff</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label for="importCampus">Campus / Branch</label>
+                        <input id="importCampus" type="text" placeholder="Main Campus">
+                    </div>
+                    <div class="field">
+                        <label for="importSection">Section Override</label>
+                        <input id="importSection" type="text" placeholder="A / B / Morning">
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="bulkImportFile">Excel File</label>
+                    <input id="bulkImportFile" type="file" accept=".xlsx,.xls,.csv">
+                </div>
+                <div class="actions">
+                    <button type="button" class="btn btn-outline" id="exportTemplateBtn"><i data-lucide="file-down"></i> Download Template</button>
+                    <button type="button" class="btn btn-outline" id="exportCurrentBtn"><i data-lucide="download"></i> Export Current Data</button>
+                    <button type="button" class="btn btn-primary" id="runImportBtn"><i data-lucide="upload"></i> Import Now</button>
+                </div>
+                <div class="note" style="margin-top: 1rem;">
+                    <strong>Template columns for students:</strong> fullName, fatherName, rollNo, classGrade, section, campusName, phone, dob, admissionDate, monthlyFee, address, gender.<br>
+                    <strong>Template columns for staff:</strong> fullName, fatherName, employeeCode, designation, campusName, section, phone, dob, salary, address, gender.
+                </div>
+            </article>
+
+            <article class="module-card">
+                <h2>Import Preview</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead id="importPreviewHead"></thead>
+                        <tbody id="importPreviewBody">
+                            <tr><td>Choose a file to preview the first rows.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+
+<script src="auth.js?v=20260801-bulk-import"></script>
+<script src="script.js?v=20260801-bulk-import"></script>
+<script>
+    const BULK_IMPORT_HEADERS = {
+        students: ['fullName', 'fatherName', 'rollNo', 'classGrade', 'section', 'campusName', 'phone', 'dob', 'admissionDate', 'monthlyFee', 'address', 'gender'],
+        staff: ['fullName', 'fatherName', 'employeeCode', 'designation', 'campusName', 'section', 'phone', 'dob', 'salary', 'address', 'gender']
+    };
+
+    function esc(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[char]));
+    }
+
+    function uid(prefix) {
+        if (window.crypto?.randomUUID) return `${prefix}-${window.crypto.randomUUID()}`;
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    function readRowsFromWorkbook(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const buffer = event.target.result;
+                    const workbook = XLSX.read(buffer, { type: 'array' });
+                    const sheetName = workbook.SheetNames[0];
+                    const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: '' });
+                    resolve(rows);
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            reader.onerror = () => reject(new Error('File could not be read.'));
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    function normalizeKeyMap(record = {}) {
+        const normalized = {};
+        Object.entries(record || {}).forEach(([key, value]) => {
+            normalized[String(key).trim()] = value;
+        });
+        return normalized;
+    }
+
+    function buildStudentsFromRows(rows, defaults = {}) {
+        return rows.map((row) => {
+            const item = normalizeKeyMap(row);
+            return {
+                id: String(item.id || '').trim() || uid('stu'),
+                studentCode: String(item.studentCode || '').trim() || '',
+                fullName: String(item.fullName || item.name || '').trim(),
+                fatherName: String(item.fatherName || item.parentName || '').trim(),
+                rollNo: String(item.rollNo || '').trim(),
+                classGrade: String(item.classGrade || item.class || '').trim(),
+                section: String(item.section || defaults.section || '').trim(),
+                campusName: String(item.campusName || defaults.campusName || '').trim(),
+                phone: String(item.phone || '').trim(),
+                dob: String(item.dob || '').trim(),
+                admissionDate: String(item.admissionDate || '').trim(),
+                monthlyFee: String(item.monthlyFee || item.fee || '').trim(),
+                address: String(item.address || '').trim(),
+                gender: String(item.gender || '').trim(),
+                enrollmentStatus: String(item.enrollmentStatus || 'Active').trim(),
+                createdAt: String(item.createdAt || new Date().toISOString()),
+                updatedAt: new Date().toISOString()
+            };
+        }).filter((student) => student.fullName);
+    }
+
+    function buildStaffFromRows(rows, defaults = {}) {
+        return rows.map((row) => {
+            const item = normalizeKeyMap(row);
+            return {
+                id: String(item.id || '').trim() || uid('stf'),
+                employeeCode: String(item.employeeCode || '').trim() || '',
+                fullName: String(item.fullName || item.name || '').trim(),
+                fatherName: String(item.fatherName || '').trim(),
+                designation: String(item.designation || '').trim(),
+                campusName: String(item.campusName || defaults.campusName || '').trim(),
+                section: String(item.section || defaults.section || '').trim(),
+                phone: String(item.phone || '').trim(),
+                dob: String(item.dob || '').trim(),
+                salary: String(item.salary || '').trim(),
+                address: String(item.address || '').trim(),
+                gender: String(item.gender || '').trim(),
+                createdAt: String(item.createdAt || new Date().toISOString()),
+                updatedAt: new Date().toISOString()
+            };
+        }).filter((staff) => staff.fullName);
+    }
+
+    function buildWorkbook(headers, exampleRows, sheetName) {
+        const ws = XLSX.utils.json_to_sheet(exampleRows.length ? exampleRows : [Object.fromEntries(headers.map((header) => [header, '']))]);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        return wb;
+    }
+
+    function updateSummary() {
+        const entity = document.getElementById('importEntity').value;
+        const records = entity === 'staff' ? getArrayData(STORAGE_KEY_STAFF) : getArrayData(STORAGE_KEY_STUDENTS);
+        document.getElementById('studentImportCount').textContent = String(getArrayData(STORAGE_KEY_STUDENTS).length);
+        document.getElementById('staffImportCount').textContent = String(getArrayData(STORAGE_KEY_STAFF).length);
+        document.getElementById('importCampusName').textContent = document.getElementById('importCampus').value || 'All';
+        document.getElementById('importStatusSummary').textContent = `${records.length} existing`;
+    }
+
+    function renderPreview(rows = [], headers = []) {
+        const head = document.getElementById('importPreviewHead');
+        const body = document.getElementById('importPreviewBody');
+        head.innerHTML = headers.length ? `<tr>${headers.map((header) => `<th>${esc(header)}</th>`).join('')}</tr>` : '';
+        body.innerHTML = rows.length
+            ? rows.slice(0, 8).map((row) => `<tr>${headers.map((header) => `<td>${esc(row[header] ?? '')}</td>`).join('')}</tr>`).join('')
+            : '<tr><td>Choose a file to preview the first rows.</td></tr>';
+    }
+
+    async function handlePreview() {
+        const file = document.getElementById('bulkImportFile').files?.[0];
+        const entity = document.getElementById('importEntity').value;
+        if (!file) {
+            renderPreview([], BULK_IMPORT_HEADERS[entity]);
+            return;
+        }
+        const rows = await readRowsFromWorkbook(file);
+        renderPreview(rows, BULK_IMPORT_HEADERS[entity]);
+        document.getElementById('importStatusSummary').textContent = `${rows.length} rows ready`;
+    }
+
+    async function runImport() {
+        const file = document.getElementById('bulkImportFile').files?.[0];
+        const entity = document.getElementById('importEntity').value;
+        const campusName = document.getElementById('importCampus').value.trim();
+        const section = document.getElementById('importSection').value.trim();
+        if (!file) {
+            alert('Please select an Excel file first.');
+            return;
+        }
+
+        const rows = await readRowsFromWorkbook(file);
+        const defaults = { campusName, section };
+        const imported = entity === 'staff' ? buildStaffFromRows(rows, defaults) : buildStudentsFromRows(rows, defaults);
+        if (!imported.length) {
+            alert('No valid rows were found in the file.');
+            return;
+        }
+
+        if (entity === 'staff') {
+            const existing = getArrayData(STORAGE_KEY_STAFF);
+            const merged = [...imported, ...existing.filter((item) => !imported.some((record) => String(record.id) === String(item.id) || String(record.employeeCode).toLowerCase() === String(item.employeeCode).toLowerCase()))];
+            saveData(STORAGE_KEY_STAFF, merged, { skipSync: true });
+            await syncToSQLDetailed('staff', merged);
+            document.getElementById('staffImportCount').textContent = String(merged.length);
+        } else {
+            const existing = getArrayData(STORAGE_KEY_STUDENTS);
+            const merged = [...imported, ...existing.filter((item) => !imported.some((record) => String(record.id) === String(item.id) || String(record.rollNo).toLowerCase() === String(item.rollNo).toLowerCase()))];
+            saveData(STORAGE_KEY_STUDENTS, merged, { skipSync: true });
+            await syncToSQLDetailed('students', merged);
+            document.getElementById('studentImportCount').textContent = String(merged.length);
+        }
+
+        document.getElementById('importStatusSummary').textContent = `${imported.length} rows imported`;
+        alert(`Imported ${imported.length} ${entity} rows successfully.`);
+        updateSummary();
+    }
+
+    function exportTemplate() {
+        const entity = document.getElementById('importEntity').value;
+        const headers = BULK_IMPORT_HEADERS[entity];
+        const exampleRows = entity === 'staff'
+            ? [{ fullName: 'Ali Khan', fatherName: 'Ahmed Khan', employeeCode: 'STF-001', designation: 'Teacher', campusName: 'Main Campus', section: 'A', phone: '03001234567', dob: '1990-01-01', salary: '40000', address: 'Lahore', gender: 'Male' }]
+            : [{ fullName: 'Hassan Ali', fatherName: 'Muhammad Ali', rollNo: '101', classGrade: 'Class 1', section: 'A', campusName: 'Main Campus', phone: '03001234567', dob: '2015-01-01', admissionDate: '2026-08-01', monthlyFee: '5000', address: 'Lahore', gender: 'Male' }];
+        const wb = buildWorkbook(headers, exampleRows, entity === 'staff' ? 'Staff' : 'Students');
+        XLSX.writeFile(wb, entity === 'staff' ? 'staff-import-template.xlsx' : 'students-import-template.xlsx');
+    }
+
+    function exportCurrent() {
+        const entity = document.getElementById('importEntity').value;
+        const data = entity === 'staff' ? getArrayData(STORAGE_KEY_STAFF) : getArrayData(STORAGE_KEY_STUDENTS);
+        const wb = buildWorkbook(BULK_IMPORT_HEADERS[entity], data, entity === 'staff' ? 'Staff' : 'Students');
+        XLSX.writeFile(wb, `${entity}-export.xlsx`);
+    }
+
+    document.getElementById('importEntity').addEventListener('change', () => {
+        updateSummary();
+        handlePreview().catch(() => {});
+    });
+    document.getElementById('bulkImportFile').addEventListener('change', () => handlePreview().catch((error) => alert(error.message || 'Preview failed.')));
+    document.getElementById('runImportBtn').addEventListener('click', () => runImport().catch((error) => alert(error.message || 'Import failed.')));
+    document.getElementById('exportTemplateBtn').addEventListener('click', exportTemplate);
+    document.getElementById('exportCurrentBtn').addEventListener('click', exportCurrent);
+    document.getElementById('importCampus').addEventListener('input', updateSummary);
+    document.getElementById('importSection').addEventListener('input', updateSummary);
+
+    updateSummary();
+    renderPreview([], BULK_IMPORT_HEADERS.students);
+    if (window.lucide) window.lucide.createIcons();
+</script>
+</body>
+</html>

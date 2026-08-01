@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parents Portal - Apex Group Of Schools</title>
+    <link rel="icon" type="image/png" href="images/logo.jpeg">
+    <link rel="stylesheet" href="style.css?v=20260603-american-lyceum-brand">
+    <link rel="stylesheet" href="ai-chat.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #effaf7 0%, #f8fafc 100%);
+            font-family: 'Nunito', 'Inter', sans-serif;
+        }
+
+        .parent-header {
+            background: #ffffff;
+            border-bottom: 1px solid #dbe7e4;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+            padding: 14px clamp(14px, 3vw, 28px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .parent-logo {
+            width: 170px;
+            max-width: 46vw;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .parent-shell {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 1.25rem;
+        }
+
+        .parent-hero {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .panel {
+            background: #ffffff;
+            border: 1px solid #dce8e5;
+            border-radius: 20px;
+            box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08);
+            padding: 1.25rem;
+        }
+
+        .eyebrow {
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #0f766e;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin: 0 0 0.5rem;
+        }
+
+        .parent-title {
+            margin: 0 0 0.75rem;
+            font-size: clamp(1.7rem, 4vw, 3rem);
+            line-height: 1.05;
+        }
+
+        .parent-copy {
+            color: #475569;
+            font-size: 0.98rem;
+            line-height: 1.65;
+        }
+
+        .parent-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .parent-action {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid #dce8e5;
+            background: linear-gradient(180deg, #ffffff 0%, #f7fcfb 100%);
+            text-decoration: none;
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        .parent-action i {
+            color: #0f766e;
+        }
+
+        .parent-cards {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .parent-card {
+            background: #f8fafc;
+            border: 1px solid #d8e3e0;
+            border-radius: 16px;
+            padding: 1rem;
+        }
+
+        .parent-card strong {
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .parent-card span {
+            color: #64748b;
+            font-size: 0.84rem;
+            line-height: 1.55;
+        }
+
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.85rem;
+            margin: 1rem 0 0;
+        }
+
+        .portal-tile {
+            background: #ffffff;
+            border: 1px solid #dce8e5;
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05);
+        }
+
+        .portal-tile i {
+            color: #0f766e;
+        }
+
+        .portal-tile strong {
+            display: block;
+            margin-top: 0.65rem;
+            font-size: 0.98rem;
+        }
+
+        .portal-tile span {
+            display: block;
+            color: #64748b;
+            font-size: 0.83rem;
+            margin-top: 0.25rem;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 960px) {
+            .parent-hero,
+            .portal-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .parent-hero,
+            .parent-actions,
+            .portal-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="parent-header">
+        <img class="parent-logo" src="images/logo.jpeg" alt="Apex Group Of Schools logo">
+        <div style="display:flex; gap:0.75rem; align-items:center; flex-wrap:wrap;">
+            <a class="btn btn-outline" href="website.html">School Website</a>
+            <a class="btn btn-primary" href="/login">Login</a>
+        </div>
+    </header>
+
+    <main class="parent-shell">
+        <section class="parent-hero">
+            <article class="panel">
+                <p class="eyebrow">Parents Portal</p>
+                <h1 class="parent-title">Track attendance, fees, results, and notices in one place.</h1>
+                <p class="parent-copy">
+                    This portal is designed for parents and guardians to quickly review their child’s school progress,
+                    fee status, exam information, attendance, and school announcements.
+                </p>
+                <div class="parent-actions">
+                    <a class="parent-action" href="fees.html"><i data-lucide="credit-card"></i> Fee Management</a>
+                    <a class="parent-action" href="student_attendance.html"><i data-lucide="calendar-check"></i> Attendance</a>
+                    <a class="parent-action" href="exams.html"><i data-lucide="clipboard-list"></i> Exams & Results</a>
+                    <a class="parent-action" href="special_notices.html"><i data-lucide="megaphone"></i> Notices</a>
+                </div>
+            </article>
+
+            <aside class="panel parent-cards">
+                <div class="parent-card">
+                    <strong>Parent Access</strong>
+                    <span>Use the school-approved login credentials linked with the family or student record.</span>
+                </div>
+                <div class="parent-card">
+                    <strong>Useful Actions</strong>
+                    <span>Check fee challans, see daily attendance, open result cards, and view school messages.</span>
+                </div>
+                <div class="parent-card">
+                    <strong>Need Help?</strong>
+                    <span>Contact the school office for account activation, password reset, or portal guidance.</span>
+                </div>
+            </aside>
+        </section>
+
+        <section class="portal-grid">
+            <article class="portal-tile"><i data-lucide="badge-check"></i><strong>Attendance Summary</strong><span>Daily and monthly attendance visibility for your child.</span></article>
+            <article class="portal-tile"><i data-lucide="receipt-text"></i><strong>Fee Updates</strong><span>View fee collection, pending dues, and challan information.</span></article>
+            <article class="portal-tile"><i data-lucide="file-badge"></i><strong>Report Cards</strong><span>Open class-wise or individual result reports when published.</span></article>
+            <article class="portal-tile"><i data-lucide="bell-ring"></i><strong>School Notices</strong><span>Read event notices, announcements, and important updates.</span></article>
+        </section>
+    </main>
+
+    <script src="auth.js?v=20260801-parent-portal"></script>
+    <script src="script.js?v=20260801-parent-portal"></script>
+    <script>
+        if (window.lucide) window.lucide.createIcons();
+    </script>
+</body>
+
+</html>

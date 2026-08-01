@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports Hub - Apex Group Of Schools</title>
+    <link rel="icon" type="image/png" href="images/logo.jpeg">
+    <link rel="stylesheet" href="style.css?v=20260603-american-lyceum-brand">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .hub-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
+        .hub-card { border:1px solid #dfe7ef; border-radius:14px; background:linear-gradient(180deg,#fff 0%,#f7fbfd 100%); padding:1rem; box-shadow:var(--shadow-sm); text-decoration:none; color:var(--text-primary); display:grid; gap:.6rem; min-height:132px; }
+        .hub-card strong { display:block; font-size:1.02rem; }
+        .hub-card span { color:var(--text-secondary); font-size:.86rem; line-height:1.45; }
+        .hub-card i { color:var(--primary-color); }
+        @media (max-width: 920px) { .hub-grid { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo-section"><img class="sidebar-logo-img" src="images/logo.jpeg" alt="Apex Group Of Schools logo"></div>
+        <nav class="nav-links"></nav>
+        <a href="settings.html" class="user-profile"><div class="avatar">AD</div><div class="user-info"><h4>Admin User</h4><p>Principal</p></div></a>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Reports Hub</h1>
+                <p style="color:var(--text-secondary); margin-top:.25rem;">Open the main reporting pages for admissions, attendance, fees, exams, and revenue.</p>
+            </div>
+        </header>
+        <section class="hub-grid">
+            <a class="hub-card" href="admission_reports.html"><i data-lucide="file-spreadsheet"></i><strong>Admission Reports</strong><span>Filter, export, and print online admission inquiries.</span></a>
+            <a class="hub-card" href="students.html"><i data-lucide="users"></i><strong>Students Reports</strong><span>Use student list, edit list, login details, and digital IDs from the student module.</span></a>
+            <a class="hub-card" href="student_attendance_report.html"><i data-lucide="calendar-check"></i><strong>Attendance Reports</strong><span>Monthly and sessional student attendance reports.</span></a>
+            <a class="hub-card" href="teacher_attendance_report.html"><i data-lucide="clipboard-check"></i><strong>Staff Attendance Reports</strong><span>Teacher and staff attendance reporting pages.</span></a>
+            <a class="hub-card" href="exam_result_history.html"><i data-lucide="history"></i><strong>Exam Reports</strong><span>Result history, report cards, and exam schedule pages.</span></a>
+            <a class="hub-card" href="revenue.html"><i data-lucide="trending-up"></i><strong>Fee & Revenue Reports</strong><span>Revenue, fee collection, and financial summaries.</span></a>
+        </section>
+    </main>
+</div>
+<script src="auth.js?v=20260801-reports-hub"></script>
+<script src="script.js?v=20260801-reports-hub"></script>
+<script>if (window.lucide) window.lucide.createIcons();</script>
+</body>
+</html>

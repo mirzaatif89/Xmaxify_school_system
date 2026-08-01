@@ -126,6 +126,10 @@
         'banners.html': { moduleKey: 'banners', defaultHome: 'dashboard.html', label: 'Banners', icon: 'image' },
         'ads.html': { moduleKey: 'ads', defaultHome: 'dashboard.html', label: 'Ads', icon: 'megaphone' },
         'online_admissions.html': { moduleKey: 'online_admissions', defaultHome: 'dashboard.html', label: 'Online Admissions', icon: 'clipboard-list' },
+        'bulk_import.html': { moduleKey: 'import_export', defaultHome: 'dashboard.html', label: 'Bulk Import', icon: 'upload' },
+        'admission_form_settings.html': { moduleKey: 'admission_form_settings', defaultHome: 'dashboard.html', label: 'Admission Form', icon: 'file-pen-line' },
+        'admission_reports.html': { moduleKey: 'admission_reports', defaultHome: 'dashboard.html', label: 'Admission Reports', icon: 'file-spreadsheet' },
+        'reports_hub.html': { moduleKey: 'reports_hub', defaultHome: 'dashboard.html', label: 'Reports Hub', icon: 'folder-kanban' },
         'teachers.html': { moduleKey: 'teachers', defaultHome: 'dashboard.html', label: 'Teachers', icon: 'book-open' },
         'stuck_off.html': { moduleKey: 'students', defaultHome: 'dashboard.html', label: 'Stuck Off', icon: 'user-x' },
         'teacher_scheduling.html': { moduleKey: 'teacher_scheduling', defaultHome: 'dashboard.html', label: 'Teacher Scheduling', icon: 'calendar-days' },
@@ -162,13 +166,17 @@
         'exam_result.html': { moduleKey: 'exams', defaultHome: 'dashboard.html', label: 'Result', icon: 'file-badge' },
         'exam_result_history.html': { moduleKey: 'exams', defaultHome: 'dashboard.html', label: 'Student Result History', icon: 'history' },
         'revenue.html': { moduleKey: 'revenue', defaultHome: 'dashboard.html', label: 'Revenue', icon: 'trending-up' },
+        'expense_management.html': { moduleKey: 'expense_management', defaultHome: 'dashboard.html', label: 'Expense Management', icon: 'receipt-text' },
+        'session_management.html': { moduleKey: 'session_management', defaultHome: 'dashboard.html', label: 'Session Management', icon: 'calendar-range' },
         'settings.html': { moduleKey: 'settings', defaultHome: 'dashboard.html', label: 'Settings', icon: 'settings' },
+        'backup_settings.html': { moduleKey: 'backup_settings', defaultHome: 'settings.html', label: 'Backup Settings', icon: 'cloud-upload' },
         'permissions.html': { moduleKey: 'permissions', defaultHome: 'dashboard.html', label: 'Permissions', icon: 'shield' },
         'designation-permissions.html': { moduleKey: 'permissions', defaultHome: 'dashboard.html', label: 'Designation Permissions', icon: 'shield-check' },
         'branch_registration.html': { moduleKey: 'branch_registration', defaultHome: 'dashboard.html', label: 'Branch Registration', icon: 'building-2' },
         'aboutme.html': { moduleKey: 'aboutme', defaultHome: 'dashboard.html', label: 'About Us', icon: 'info' },
         'student_portal.html': { moduleKey: 'student_portal', defaultHome: 'student_portal.html', label: 'Student Portal', icon: 'graduation-cap' },
-        'teacher_portal.html': { moduleKey: 'teacher_portal', defaultHome: 'teacher_portal.html', label: 'Teacher Portal', icon: 'book-user' }
+        'teacher_portal.html': { moduleKey: 'teacher_portal', defaultHome: 'teacher_portal.html', label: 'Teacher Portal', icon: 'book-user' },
+        'parent_portal.html': { moduleKey: 'parent_portal', defaultHome: 'parent_portal.html', label: 'Parents Portal', icon: 'users-round' }
     };
     const portalPages = new Set();
     const routeToPageMap = Object.keys(pageRegistry).reduce((acc, pageName) => {
@@ -211,7 +219,7 @@
     }
 
     const currentPage = normalizePageName(window.location.pathname);
-    const publicPages = new Set(['index.html', 'login.html']);
+    const publicPages = new Set(['index.html', 'login.html', 'parent_portal.html']);
 
     const defaultPermissions = {
         loginAccess: {
@@ -274,11 +282,13 @@
                     bills: 'manage',
                     revenue: 'view',
                     settings: 'view',
+                    backup_settings: 'manage',
                     branch_registration: 'view',
                     aboutme: 'view',
                     permissions: 'view',
                     student_portal: 'manage',
-                    teacher_portal: 'manage'
+                    teacher_portal: 'manage',
+                    parent_portal: 'view'
                 }
             },
             computer_operator: {
@@ -307,6 +317,7 @@
                     exams: 'view',
                     notifications: 'view',
                     messages: 'view',
+                    parent_portal: 'view',
                     aboutme: 'view'
                 }
             },
@@ -726,6 +737,8 @@
                 { type: 'link', page: 'online_admissions.html', label: 'Online Admissions', icon: 'clipboard-list' },
                 { type: 'link', page: 'classes.html', label: 'Classes', icon: 'school' },
                 { type: 'link', page: 'students.html', label: 'Students', icon: 'users' },
+                { type: 'link', page: 'bulk_import.html', label: 'Bulk Import', icon: 'upload' },
+                { type: 'link', page: 'admission_form_settings.html', label: 'Admission Form', icon: 'file-pen-line' },
                 { type: 'link', page: 'student_scheduling.html', label: 'Students Scheduling', icon: 'calendar-clock' },
                 { type: 'link', page: 'families.html', label: 'Families', icon: 'home' },
                 { type: 'link', page: 'teachers.html', label: 'Teachers', icon: 'book-open' },
@@ -770,6 +783,9 @@
                     icon: 'landmark',
                     children: [
                         { page: 'revenue.html', label: 'Revenue', icon: 'trending-up' },
+                        { page: 'expense_management.html', label: 'Expense Management', icon: 'receipt-text' },
+                        { page: 'session_management.html', label: 'Session Management', icon: 'calendar-range' },
+                        { page: 'reports_hub.html', label: 'Reports Hub', icon: 'folder-kanban' },
                         { page: 'teacher_salaries.html', label: 'Salaries', icon: 'wallet' },
                         { page: 'bills.html', label: 'Bills', icon: 'receipt' }
                     ]

@@ -30,6 +30,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'eduCore_secret_key_2026';
 const PERMISSIONS_FILE = path.join(DATA_DIR, 'permissions.json');
 const DETAILED_PERMISSIONS_FILE = path.join(DATA_DIR, 'permissions-detailed.json');
 const DATE_SHEET_FILE = path.join(DATA_DIR, 'date_sheet.json');
+const BACKUP_SETTINGS_FILE = path.join(DATA_DIR, 'backup_settings.json');
 const ADMIN_CREDENTIALS_FILE = path.join(DATA_DIR, 'admin_credentials.json');
 const PRINCIPAL_USERNAME = process.env.PRINCIPAL_USERNAME || 'principal@school.com';
 const PRINCIPAL_PASSWORD = process.env.PRINCIPAL_PASSWORD || 'Principal123';
@@ -156,11 +157,29 @@ const activeSessions = new Map();
 const MODULE_KEYS = [
     'dashboard',
     'students',
+    'families',
+    'student_scheduling',
+    'banners',
+    'ads',
+    'online_admissions',
+    'import_export',
+    'admission_form_settings',
+    'admission_reports',
+    'reports_hub',
     'teachers',
     'staff',
     'classes',
+    'set_fee',
     'fees',
     'fee_challan',
+    'library',
+    'cafe',
+    'transport',
+    'certificate',
+    'complain_box',
+    'diary',
+    'visitor_books',
+    'annual_charges',
     'teacher_salaries',
     'student_attendance',
     'teacher_attendance',
@@ -170,12 +189,20 @@ const MODULE_KEYS = [
     'messages',
     'special_notices',
     'exams',
+    'exam_schedule',
+    'exam_result',
+    'exam_result_history',
     'revenue',
+    'expense_management',
+    'session_management',
     'settings',
+    'backup_settings',
     'permissions',
     'branch_registration',
+    'parent_portal',
     'aboutme',
-    'student_portal'
+    'student_portal',
+    'teacher_portal'
 ];
 const ACCESS_LEVELS = ['none', 'view', 'edit', 'manage'];
 const ALLOWED_HOME_PAGES = new Set([
@@ -197,9 +224,15 @@ const ALLOWED_HOME_PAGES = new Set([
     'special_notices.html',
     'exams.html',
     'revenue.html',
+    'expense_management.html',
+    'session_management.html',
+    'reports_hub.html',
+    'admission_reports.html',
     'settings.html',
+    'backup_settings.html',
     'permissions.html',
     'branch_registration.html',
+    'parent_portal.html',
     'aboutme.html',
     'student_portal.html'
 ]);
@@ -245,11 +278,29 @@ const defaultPermissions = {
             permissions: buildModuleSet('none', {
                 dashboard: 'manage',
                 students: 'manage',
+                families: 'manage',
+                student_scheduling: 'manage',
+                banners: 'manage',
+                ads: 'manage',
+                online_admissions: 'manage',
+                import_export: 'manage',
+                admission_form_settings: 'manage',
+                admission_reports: 'view',
+                reports_hub: 'view',
                 teachers: 'manage',
                 staff: 'manage',
                 classes: 'manage',
+                set_fee: 'manage',
                 fees: 'manage',
                 fee_challan: 'manage',
+                library: 'manage',
+                cafe: 'manage',
+                transport: 'manage',
+                certificate: 'manage',
+                complain_box: 'manage',
+                diary: 'manage',
+                visitor_books: 'manage',
+                annual_charges: 'manage',
                 teacher_salaries: 'manage',
                 student_attendance: 'manage',
                 teacher_attendance: 'manage',
@@ -259,11 +310,20 @@ const defaultPermissions = {
                 messages: 'manage',
                 special_notices: 'manage',
                 exams: 'manage',
+                exam_schedule: 'manage',
+                exam_result: 'manage',
+                exam_result_history: 'view',
                 revenue: 'view',
+                expense_management: 'manage',
+                session_management: 'manage',
                 settings: 'view',
+                backup_settings: 'manage',
                 branch_registration: 'view',
+                parent_portal: 'view',
                 permissions: 'view',
-                aboutme: 'view'
+                aboutme: 'view',
+                student_portal: 'manage',
+                teacher_portal: 'manage'
             })
         },
         computer_operator: {
@@ -272,16 +332,48 @@ const defaultPermissions = {
             permissions: buildModuleSet('none', {
                 dashboard: 'view',
                 students: 'manage',
+                families: 'view',
+                student_scheduling: 'view',
+                banners: 'view',
+                ads: 'view',
+                online_admissions: 'view',
+                import_export: 'view',
+                admission_form_settings: 'none',
+                admission_reports: 'view',
+                reports_hub: 'view',
                 teachers: 'view',
                 staff: 'view',
                 classes: 'view',
+                set_fee: 'view',
                 fees: 'view',
                 fee_challan: 'manage',
+                library: 'view',
+                cafe: 'view',
+                transport: 'view',
+                certificate: 'view',
+                complain_box: 'view',
+                diary: 'view',
+                visitor_books: 'view',
+                annual_charges: 'view',
                 student_attendance: 'edit',
                 exams: 'view',
                 notifications: 'view',
                 messages: 'view',
-                aboutme: 'view'
+                special_notices: 'view',
+                exam_schedule: 'view',
+                exam_result: 'view',
+                exam_result_history: 'view',
+                revenue: 'view',
+                settings: 'view',
+                expense_management: 'view',
+                session_management: 'view',
+                backup_settings: 'view',
+                branch_registration: 'view',
+                parent_portal: 'view',
+                permissions: 'view',
+                aboutme: 'view',
+                student_portal: 'manage',
+                teacher_portal: 'manage'
             })
         }
     }
@@ -1047,6 +1139,53 @@ function writeDateSheet(data) {
     return normalized;
 }
 
+function normalizeBackupSettingsPayload(input = {}) {
+    const raw = input && typeof input === 'object' ? input : {};
+    return {
+        localFiles: raw.localFiles !== false,
+        googleDrive: raw.googleDrive === true,
+        daily: raw.daily !== false,
+        weekly: raw.weekly === true,
+        monthly: raw.monthly === true,
+        googleDriveFolderId: String(raw.googleDriveFolderId || '').trim(),
+        backupPath: String(raw.backupPath || '').trim(),
+        notes: String(raw.notes || '').trim(),
+        updatedAt: new Date().toISOString()
+    };
+}
+
+function readBackupSettings() {
+    try {
+        if (!fs.existsSync(BACKUP_SETTINGS_FILE)) {
+            return normalizeBackupSettingsPayload({
+                localFiles: true,
+                googleDrive: false,
+                daily: true,
+                weekly: false,
+                monthly: false,
+                backupPath: 'data/backups'
+            });
+        }
+        const saved = JSON.parse(fs.readFileSync(BACKUP_SETTINGS_FILE, 'utf8'));
+        return normalizeBackupSettingsPayload(saved);
+    } catch (error) {
+        return normalizeBackupSettingsPayload({
+            localFiles: true,
+            googleDrive: false,
+            daily: true,
+            weekly: false,
+            monthly: false,
+            backupPath: 'data/backups'
+        });
+    }
+}
+
+function writeBackupSettings(data) {
+    const normalized = normalizeBackupSettingsPayload(data);
+    fs.writeFileSync(BACKUP_SETTINGS_FILE, JSON.stringify(normalized, null, 2), 'utf8');
+    return normalized;
+}
+
 app.get('/api/date-sheet', (req, res) => {
     res.json({ success: true, dateSheet: readDateSheet() });
 });
@@ -1058,6 +1197,23 @@ app.post('/api/date-sheet', (req, res) => {
         res.json({ success: true, dateSheet: saved });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Date sheet could not be executed.' });
+    }
+});
+
+app.get('/api/backup-settings', (_req, res) => {
+    res.json({ success: true, backupSettings: readBackupSettings() });
+});
+
+app.post('/api/backup-settings', authenticateToken, (req, res) => {
+    if (req.user.role !== 'Admin' && req.user.role !== 'Principal') {
+        return res.status(403).json({ success: false, message: 'Admin or Principal access required.' });
+    }
+
+    try {
+        const saved = writeBackupSettings(req.body || {});
+        res.json({ success: true, backupSettings: saved });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message || 'Backup settings could not be saved.' });
     }
 });
 
@@ -1768,7 +1924,25 @@ app.get('/api/branches', async (req, res) => {
     try {
         const branches = await sequelize.models.User.findAll({
             where: { role: 'Branch' },
-            attributes: ['id', 'profileId', 'fullName', 'username', 'plainPassword', 'campusName', 'isActive'],
+            attributes: [
+                'id',
+                'profileId',
+                'fullName',
+                'username',
+                'plainPassword',
+                'campusName',
+                'principalName',
+                'principalPicture',
+                'branchContact',
+                'logo',
+                'address',
+                'email',
+                'branchCode',
+                'additionDate',
+                'endingDate',
+                'studentAccessLimit',
+                'isActive'
+            ],
             order: [['campusName', 'ASC']]
         });
         res.json(branches);
@@ -1811,13 +1985,40 @@ app.post('/api/branches', async (req, res) => {
                 plainPassword: rawPassword,
                 role: 'Branch',
                 campusName: item.campusName,
+                principalName: String(item.principalName || '').trim(),
+                principalPicture: String(item.principalPicture || '').trim(),
+                branchContact: String(item.branchContact || '').trim(),
+                logo: String(item.logo || '').trim(),
+                address: String(item.address || '').trim(),
+                branchCode: String(item.branchCode || branchId).trim(),
+                additionDate: String(item.additionDate || '').trim(),
+                endingDate: String(item.endingDate || '').trim(),
+                studentAccessLimit: String(item.studentAccessLimit || '').trim(),
                 isActive: item.isActive !== false
             });
         }
 
         const branches = await User.findAll({
             where: { role: 'Branch' },
-            attributes: ['id', 'profileId', 'fullName', 'username', 'plainPassword', 'campusName', 'isActive'],
+            attributes: [
+                'id',
+                'profileId',
+                'fullName',
+                'username',
+                'plainPassword',
+                'campusName',
+                'principalName',
+                'principalPicture',
+                'branchContact',
+                'logo',
+                'address',
+                'email',
+                'branchCode',
+                'additionDate',
+                'endingDate',
+                'studentAccessLimit',
+                'isActive'
+            ],
             order: [['campusName', 'ASC']]
         });
 
@@ -3427,6 +3628,15 @@ function defineUserModel(db) {
         plainPassword: DataTypes.STRING,
         groupKey: DataTypes.STRING,
         role: { type: DataTypes.STRING, allowNull: false },
+        principalName: DataTypes.STRING,
+        principalPicture: DataTypes.TEXT('long'),
+        branchContact: DataTypes.STRING,
+        logo: DataTypes.TEXT('long'),
+        address: DataTypes.TEXT,
+        branchCode: DataTypes.STRING,
+        additionDate: DataTypes.STRING,
+        endingDate: DataTypes.STRING,
+        studentAccessLimit: DataTypes.STRING,
         isActive: { type: DataTypes.BOOLEAN, defaultValue: true }
     });
 }

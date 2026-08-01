@@ -20,6 +20,8 @@ const apiCatalog = {
         { method: 'POST', path: '/api/session/heartbeat', auth: true, group: 'Auth', description: 'Keep logged-in session active.' },
         { method: 'POST', path: '/api/session/end', auth: true, group: 'Auth', description: 'Logout/end logged-in session. Mobile app should remove saved token after success.' },
         { method: 'POST', path: '/api/upload', auth: false, group: 'Files', description: 'Upload assignment, syllabus, profile, lecture, or message file. Accepts multipart/form-data file field or JSON dataUrl/base64 and returns file.url.' },
+        { method: 'GET', path: '/api/backup-settings', auth: false, group: 'System', description: 'Read backup configuration.' },
+        { method: 'POST', path: '/api/backup-settings', auth: true, group: 'System', description: 'Save backup configuration.' },
 
         { method: 'GET', path: '/api/student/me', auth: true, group: 'Student Portal', description: 'Current student profile.' },
         { method: 'GET', path: '/api/students', auth: false, group: 'Students', description: 'List students.' },
@@ -48,6 +50,7 @@ const apiCatalog = {
         { method: 'GET', path: '/api/student-quiz-submissions', auth: false, group: 'Student Portal', description: 'Student quiz submissions.' },
         { method: 'POST', path: '/api/student-quiz-submissions', auth: false, group: 'Student Portal', description: 'Save quiz submission.' },
         { method: 'GET', path: '/api/about-software', auth: false, group: 'Student Portal', description: 'About software details for app info screen.' },
+        { method: 'GET', path: '/parent_portal.html', auth: false, group: 'Parent Portal', description: 'Parent portal page.' },
 
         { method: 'GET', path: '/api/teacher/me', auth: true, group: 'Teacher Portal', description: 'Current teacher profile.' },
         { method: 'GET', path: '/api/teachers', auth: false, group: 'Teachers', description: 'List teachers with timetable/schedule data.' },

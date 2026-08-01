@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup Settings - Apex Group Of Schools</title>
+    <link rel="icon" type="image/png" href="images/logo.jpeg">
+    <link rel="stylesheet" href="style.css?v=20260603-american-lyceum-brand">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .backup-shell {
+            max-width: 980px;
+        }
+
+        .backup-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .backup-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+        }
+
+        .backup-field label {
+            display: block;
+            margin-bottom: 0.45rem;
+            color: var(--text-secondary);
+            font-size: 0.84rem;
+            font-weight: 700;
+        }
+
+        .backup-field input[type="text"] {
+            width: 100%;
+            min-height: 42px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: #fff;
+            padding: 0.58rem 0.85rem;
+            font: inherit;
+        }
+
+        .backup-option {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .backup-option input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .backup-option strong {
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .backup-option span {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            margin-top: 0.15rem;
+        }
+
+        .backup-summary {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.75rem;
+        }
+
+        .backup-summary article {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.9rem;
+        }
+
+        .backup-summary strong {
+            display: block;
+            font-size: 1rem;
+            margin-top: 0.35rem;
+        }
+
+        @media (max-width: 860px) {
+            .backup-grid,
+            .backup-summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <img class="sidebar-logo-img" src="images/logo.jpeg" alt="Apex Group Of Schools logo">
+            </div>
+            <nav class="nav-links">
+                <a href="dashboard.html" class="nav-item"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+                <a href="settings.html" class="nav-item"><i data-lucide="settings"></i><span>Settings</span></a>
+                <a href="backup_settings.html" class="nav-item active"><i data-lucide="cloud-upload"></i><span>Backup</span></a>
+                <a href="branch_registration.html" class="nav-item"><i data-lucide="building-2"></i><span>Branch Registration</span></a>
+                <a href="aboutme.html" class="nav-item"><i data-lucide="info"></i><span>About Us</span></a>
+                <a href="#" class="nav-item" onclick="logoutUser(event)"><i data-lucide="log-out"></i><span>Logout</span></a>
+            </nav>
+            <a href="settings.html" class="user-profile">
+                <div class="avatar">AD</div>
+                <div class="user-info">
+                    <h4>Admin User</h4>
+                    <p>Backup</p>
+                </div>
+            </a>
+        </aside>
+
+        <main class="main-content backup-shell">
+            <header class="header">
+                <div>
+                    <h1>Backup Settings</h1>
+                    <p style="color: var(--text-secondary); margin-top: 0.35rem;">Control local and cloud backups for the school system.</p>
+                </div>
+                <div class="header-actions">
+                    <a class="btn btn-outline" href="settings.html">Back to Settings</a>
+                </div>
+            </header>
+
+            <section class="backup-card">
+                <h3 class="settings-section-title" style="margin-bottom: 1rem;">
+                    <i data-lucide="shield-check" size="18"></i> Current Backup Status
+                </h3>
+                <div class="backup-summary">
+                    <article><span>Local Files</span><strong id="backupLocalStatus">-</strong></article>
+                    <article><span>Google Drive</span><strong id="backupDriveStatus">-</strong></article>
+                    <article><span>Schedule</span><strong id="backupScheduleStatus">-</strong></article>
+                    <article><span>Backup Path</span><strong id="backupPathStatus">-</strong></article>
+                </div>
+            </section>
+
+            <section class="backup-card">
+                <h3 class="settings-section-title" style="margin-bottom: 1rem;">
+                    <i data-lucide="cloud-upload" size="18"></i> Configure Backup
+                </h3>
+                <form id="backupSettingsForm">
+                    <div class="backup-grid">
+                        <label class="backup-option">
+                            <input type="checkbox" id="backupLocalFiles" checked>
+                            <div>
+                                <strong>Local Files</strong>
+                                <span>Keep a backup on the server machine.</span>
+                            </div>
+                        </label>
+                        <label class="backup-option">
+                            <input type="checkbox" id="backupGoogleDrive">
+                            <div>
+                                <strong>Google Drive</strong>
+                                <span>Mirror backups to Google Drive.</span>
+                            </div>
+                        </label>
+                        <label class="backup-option">
+                            <input type="checkbox" id="backupDaily" checked>
+                            <div>
+                                <strong>Daily Backup</strong>
+                                <span>Run a backup every day.</span>
+                            </div>
+                        </label>
+                        <label class="backup-option">
+                            <input type="checkbox" id="backupWeekly">
+                            <div>
+                                <strong>Weekly Backup</strong>
+                                <span>Create a weekly archive.</span>
+                            </div>
+                        </label>
+                        <label class="backup-option">
+                            <input type="checkbox" id="backupMonthly">
+                            <div>
+                                <strong>Monthly Backup</strong>
+                                <span>Create a month-end archive.</span>
+                            </div>
+                        </label>
+                        <div class="backup-field">
+                            <label for="backupPath">Local Backup Path</label>
+                            <input type="text" id="backupPath" placeholder="data/backups">
+                        </div>
+                        <div class="backup-field">
+                            <label for="backupGoogleDriveFolderId">Google Drive Folder ID</label>
+                            <input type="text" id="backupGoogleDriveFolderId" placeholder="Drive folder id">
+                        </div>
+                        <div class="backup-field">
+                            <label for="backupNotes">Notes</label>
+                            <input type="text" id="backupNotes" placeholder="Optional backup notes">
+                        </div>
+                    </div>
+
+                    <p id="backupSettingsMessage" class="settings-hint" style="margin-top: 1rem;">Loading backup settings...</p>
+                    <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top: 1rem;">
+                        <button type="submit" class="btn btn-primary">
+                            <i data-lucide="save"></i> Save Backup Settings
+                        </button>
+                        <button type="button" class="btn btn-outline" id="reloadBackupSettingsBtn">
+                            <i data-lucide="rotate-ccw"></i> Reload
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </main>
+    </div>
+
+    <script src="auth.js?v=20260801-backup-settings"></script>
+    <script src="script.js?v=20260801-backup-settings"></script>
+    <script>
+        const backupApiBase = `${window.location.origin}/api`;
+
+        function setBackupSummary(data = {}) {
+            document.getElementById('backupLocalStatus').textContent = data.localFiles ? 'Enabled' : 'Disabled';
+            document.getElementById('backupDriveStatus').textContent = data.googleDrive ? 'Enabled' : 'Disabled';
+            const schedule = [
+                data.daily ? 'Daily' : null,
+                data.weekly ? 'Weekly' : null,
+                data.monthly ? 'Monthly' : null
+            ].filter(Boolean).join(' / ') || 'Not set';
+            document.getElementById('backupScheduleStatus').textContent = schedule;
+            document.getElementById('backupPathStatus').textContent = data.backupPath || '-';
+        }
+
+        function populateBackupForm(data = {}) {
+            document.getElementById('backupLocalFiles').checked = data.localFiles !== false;
+            document.getElementById('backupGoogleDrive').checked = data.googleDrive === true;
+            document.getElementById('backupDaily').checked = data.daily !== false;
+            document.getElementById('backupWeekly').checked = data.weekly === true;
+            document.getElementById('backupMonthly').checked = data.monthly === true;
+            document.getElementById('backupPath').value = data.backupPath || 'data/backups';
+            document.getElementById('backupGoogleDriveFolderId').value = data.googleDriveFolderId || '';
+            document.getElementById('backupNotes').value = data.notes || '';
+            setBackupSummary(data);
+        }
+
+        async function loadBackupSettings() {
+            const message = document.getElementById('backupSettingsMessage');
+            try {
+                message.textContent = 'Loading backup settings...';
+                const token = sessionStorage.getItem('eduCore_token') || '';
+                const response = await fetch(`${backupApiBase}/backup-settings`, {
+                    cache: 'no-store',
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                });
+                const result = await response.json();
+                if (!response.ok || result.success === false) {
+                    throw new Error(result.message || 'Backup settings could not be loaded.');
+                }
+                populateBackupForm(result.backupSettings || {});
+                message.textContent = 'Backup settings loaded successfully.';
+            } catch (error) {
+                message.textContent = error.message || 'Backup settings could not be loaded.';
+                message.className = 'settings-hint error';
+            }
+        }
+
+        async function saveBackupSettings(event) {
+            event.preventDefault();
+            const message = document.getElementById('backupSettingsMessage');
+            const payload = {
+                localFiles: document.getElementById('backupLocalFiles').checked,
+                googleDrive: document.getElementById('backupGoogleDrive').checked,
+                daily: document.getElementById('backupDaily').checked,
+                weekly: document.getElementById('backupWeekly').checked,
+                monthly: document.getElementById('backupMonthly').checked,
+                backupPath: document.getElementById('backupPath').value.trim(),
+                googleDriveFolderId: document.getElementById('backupGoogleDriveFolderId').value.trim(),
+                notes: document.getElementById('backupNotes').value.trim()
+            };
+
+            try {
+                message.className = 'settings-hint';
+                message.textContent = 'Saving backup settings...';
+                const token = sessionStorage.getItem('eduCore_token') || '';
+                const response = await fetch(`${backupApiBase}/backup-settings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(token ? { Authorization: `Bearer ${token}` } : {})
+                    },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (!response.ok || result.success === false) {
+                    throw new Error(result.message || 'Backup settings could not be saved.');
+                }
+                populateBackupForm(result.backupSettings || payload);
+                message.textContent = 'Backup settings saved successfully.';
+                message.className = 'settings-hint success';
+            } catch (error) {
+                message.textContent = error.message || 'Backup settings could not be saved.';
+                message.className = 'settings-hint error';
+            }
+        }
+
+        document.getElementById('backupSettingsForm').addEventListener('submit', saveBackupSettings);
+        document.getElementById('reloadBackupSettingsBtn').addEventListener('click', loadBackupSettings);
+        loadBackupSettings();
+        if (window.lucide) window.lucide.createIcons();
+    </script>
+</body>
+
+</html>

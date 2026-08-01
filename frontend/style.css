@@ -442,15 +442,15 @@ ul {
     height: 36px;
     border-radius: 8px;
     background-color: #f8fbff;
-    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 15.5L20 6L32 15.5L20 22L8 15.5Z' fill='%230f5e9c'/%3E%3Cpath d='M12.8 18.8V25.4C12.8 27.8 16 30 20 30C24 30 27.2 27.8 27.2 25.4V18.8' stroke='%23083a63' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M8 16.2L32 16.2' stroke='%23f2b21b' stroke-width='2.2' stroke-linecap='round'/%3E%3Cpath d='M12.5 28.6C16.4 25.1 23.6 25.1 27.5 28.6' stroke='%23f2b21b' stroke-width='2.2' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("images/logo.jpeg");
     background-position: center;
     background-repeat: no-repeat;
-    background-size: 31px 31px;
+    background-size: contain;
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
 }
 
 .sidebar .logo-section::after {
-    content: "Apex Group Of Schools\A Shahdara Lahore";
+    content: "Apex Group Of Schools";
     color: #ffffff;
     font-size: 0.9rem;
     font-weight: 800;

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Management - Apex Group Of Schools</title>
+    <link rel="icon" type="image/png" href="images/logo.jpeg">
+    <link rel="stylesheet" href="style.css?v=20260603-american-lyceum-brand">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .summary-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.85rem; margin-bottom:1rem; }
+        .summary-card { border:1px solid #dfe7ef; border-radius:14px; background:linear-gradient(180deg,#fff 0%,#f7fbfd 100%); padding:.95rem; box-shadow:var(--shadow-sm); }
+        .summary-card span { display:block; font-size:.78rem; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.04em; }
+        .summary-card strong { display:block; margin-top:.35rem; font-size:1.35rem; }
+        .layout { display:grid; grid-template-columns:minmax(320px,0.8fr) minmax(420px,1.2fr); gap:1rem; align-items:start; }
+        .card { background:#fff; border:1px solid var(--border-color); border-radius:14px; box-shadow:var(--shadow-sm); padding:1rem; }
+        .field { display:grid; gap:.35rem; margin-bottom:.85rem; }
+        .field label { font-size:.84rem; font-weight:800; color:var(--text-secondary); }
+        .field input, .field textarea, .field select { width:100%; min-height:42px; border:1px solid var(--border-color); border-radius:10px; padding:.65rem .85rem; font:inherit; background:#fff; }
+        .field textarea { min-height:88px; resize:vertical; }
+        .actions { display:flex; gap:.65rem; flex-wrap:wrap; }
+        .table-wrap { overflow-x:auto; }
+        table { width:100%; min-width:980px; border-collapse:collapse; }
+        th, td { padding:.72rem .7rem; border-bottom:1px solid #e5ecf3; text-align:left; vertical-align:top; }
+        th { font-size:.8rem; text-transform:uppercase; color:var(--text-secondary); background:#f8fafc; }
+        .badge { display:inline-flex; padding:.22rem .55rem; border-radius:999px; font-size:.75rem; font-weight:800; }
+        .badge.ok { background:#dcfce7; color:#166534; }
+        .badge.warn { background:#fef3c7; color:#92400e; }
+        @media (max-width: 920px) { .summary-grid, .layout { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo-section"><img class="sidebar-logo-img" src="images/logo.jpeg" alt="Apex Group Of Schools logo"></div>
+        <nav class="nav-links"></nav>
+        <a href="settings.html" class="user-profile"><div class="avatar">AD</div><div class="user-info"><h4>Admin User</h4><p>Principal</p></div></a>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Expense Management</h1>
+                <p style="color:var(--text-secondary); margin-top:.25rem;">Track expense types, sources, ledger, salary expense and history.</p>
+            </div>
+        </header>
+
+        <section class="summary-grid">
+            <article class="summary-card"><span>Total Expenses</span><strong id="expenseTotal">PKR 0</strong></article>
+            <article class="summary-card"><span>This Month</span><strong id="expenseMonth">PKR 0</strong></article>
+            <article class="summary-card"><span>Salary Expense</span><strong id="salaryExpense">PKR 0</strong></article>
+            <article class="summary-card"><span>Records</span><strong id="expenseCount">0</strong></article>
+        </section>
+
+        <section class="layout">
+            <article class="card">
+                <h2>Add Expense</h2>
+                <div class="field"><label for="expenseType">Expense Type</label><input id="expenseType" placeholder="Electricity / Transport / Rent"></div>
+                <div class="field"><label for="expenseSource">Payment Source</label><input id="expenseSource" placeholder="Cash / Bank / Cheque"></div>
+                <div class="field"><label for="expenseCampus">Campus</label><input id="expenseCampus" placeholder="Main Campus"></div>
+                <div class="field"><label for="expenseAmount">Amount</label><input id="expenseAmount" type="number" min="0" step="0.01"></div>
+                <div class="field"><label for="expenseDate">Date</label><input id="expenseDate" type="date"></div>
+                <div class="field"><label for="expenseNote">Note</label><textarea id="expenseNote" placeholder="Expense note"></textarea></div>
+                <div class="actions">
+                    <button class="btn btn-outline" type="button" id="clearExpenseBtn"><i data-lucide="refresh-cw"></i> Clear</button>
+                    <button class="btn btn-primary" type="button" id="saveExpenseBtn"><i data-lucide="save"></i> Save Expense</button>
+                    <button class="btn btn-outline" type="button" id="exportExpenseBtn"><i data-lucide="download"></i> Export CSV</button>
+                </div>
+            </article>
+            <article class="card">
+                <h2>Expense Ledger</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Date</th><th>Type</th><th>Source</th><th>Campus</th><th>Amount</th><th>Note</th><th>Action</th></tr>
+                        </thead>
+                        <tbody id="expenseTableBody"></tbody>
+                    </table>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+<script src="auth.js?v=20260801-expense-management"></script>
+<script src="script.js?v=20260801-expense-management"></script>
+<script>
+const KEY = 'eduCore_expense_records';
+function read(){ try { const data=JSON.parse(localStorage.getItem(KEY)||'[]'); return Array.isArray(data) ? data : []; } catch { return []; } }
+function write(data){ localStorage.setItem(KEY, JSON.stringify(data)); }
+function esc(v){ return String(v ?? '').replace(/[&<>"']/g, (c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+function money(v){ return `PKR ${Number(v || 0).toLocaleString('en-PK')}`; }
+function today(){ return new Date().toISOString().slice(0,10); }
+function getSalaryExpense(){ return getTeacherSalaries ? Object.values(getTeacherSalaries()).reduce((sum,p)=>sum + Number(p?.amount || 0), 0) : 0; }
+function render(){
+    const records = read().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+    const total = records.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const monthKey = today().slice(0,7);
+    const monthTotal = records.filter((item) => String(item.date || '').slice(0,7) === monthKey).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    document.getElementById('expenseTotal').textContent = money(total);
+    document.getElementById('expenseMonth').textContent = money(monthTotal);
+    document.getElementById('salaryExpense').textContent = money(getSalaryExpense());
+    document.getElementById('expenseCount').textContent = String(records.length);
+    document.getElementById('expenseTableBody').innerHTML = records.length ? records.map((item) => `
+        <tr>
+            <td>${esc(item.date || '-')}</td>
+            <td>${esc(item.type || '-')}</td>
+            <td>${esc(item.source || '-')}</td>
+            <td>${esc(item.campus || '-')}</td>
+            <td><strong>${esc(money(item.amount || 0))}</strong></td>
+            <td>${esc(item.note || '-')}</td>
+            <td><button class="btn btn-outline" type="button" onclick="deleteExpense('${esc(item.id)}')">Delete</button></td>
+        </tr>
+    `).join('') : '<tr><td colspan="7">No expenses recorded yet.</td></tr>';
+    if (window.lucide) window.lucide.createIcons();
+}
+function clearForm(){
+    document.getElementById('expenseType').value = '';
+    document.getElementById('expenseSource').value = '';
+    document.getElementById('expenseCampus').value = '';
+    document.getElementById('expenseAmount').value = '';
+    document.getElementById('expenseDate').value = today();
+    document.getElementById('expenseNote').value = '';
+}
+function saveExpense(){
+    const type = document.getElementById('expenseType').value.trim();
+    const source = document.getElementById('expenseSource').value.trim();
+    const campus = document.getElementById('expenseCampus').value.trim();
+    const amount = Number(document.getElementById('expenseAmount').value || 0);
+    const date = document.getElementById('expenseDate').value || today();
+    const note = document.getElementById('expenseNote').value.trim();
+    if (!type || !source || !(amount > 0)) { alert('Type, source, and amount are required.'); return; }
+    const records = read();
+    records.unshift({ id:`EXP-${Date.now()}`, type, source, campus, amount, date, note, createdAt:new Date().toISOString() });
+    write(records);
+    document.getElementById('expenseStatus')?.textContent = 'Expense saved.';
+    clearForm();
+    render();
+}
+function deleteExpense(id){
+    if (!confirm('Delete this expense?')) return;
+    write(read().filter((item) => String(item.id) !== String(id)));
+    render();
+}
+function exportCsv(){
+    const rows = read();
+    const headers = ['id','date','type','source','campus','amount','note'];
+    const csv = [headers.join(','), ...rows.map((row) => headers.map((key) => `"${String(row[key] ?? '').replace(/"/g, '""')}"`).join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'expense-ledger.csv';
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+document.getElementById('saveExpenseBtn').addEventListener('click', saveExpense);
+document.getElementById('clearExpenseBtn').addEventListener('click', clearForm);
+document.getElementById('exportExpenseBtn').addEventListener('click', exportCsv);
+document.getElementById('expenseDate').value = today();
+render();
+</script>
+</body>
+</html>

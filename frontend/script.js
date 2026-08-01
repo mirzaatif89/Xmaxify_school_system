@@ -15,6 +15,7 @@ const STORAGE_KEY_PROMOTION_HISTORY = 'eduCore_promotion_history';
 const STORAGE_KEY_SPECIAL_NOTICES = 'eduCore_special_notices';
 const STORAGE_KEY_ALUMNI = 'eduCore_alumni';
 const STORAGE_KEY_COMPLAINTS = 'eduCore_complaints';
+const STORAGE_KEY_DASHBOARD_CALENDAR_NOTES = 'eduCore_dashboard_calendar_notes';
 const SIDEBAR_SCROLL_KEY = 'eduCore_sidebar_scroll_position';
 let teacherScheduleDraft = [];
 
@@ -39,6 +40,9 @@ let dashboardActiveSessionsInterval = null;
 let activeSessionsModalEventsBound = false;
 let selectedDashboardRevenueMonthKey = '';
 let dashboardRevenueMonthManuallySelected = false;
+let dashboardOverviewRenderToken = 0;
+let dashboardDetailState = {};
+let dashboardDetailModalBound = false;
 const DASHBOARD_CAMPUS_FILTER_KEY = 'eduCore_dashboard_campus_filter';
 const GLOBAL_CAMPUS_FILTER_KEY = DASHBOARD_CAMPUS_FILTER_KEY;
 const DEFAULT_CAMPUS_NAMES = ['Main Campus'];
@@ -104,12 +108,20 @@ const FALLBACK_ROUTE_TO_PAGE = {
     exam_result: 'exam_result.html',
     exam_result_history: 'exam_result_history.html',
     revenue: 'revenue.html',
+    expense_management: 'expense_management.html',
+    session_management: 'session_management.html',
+    bulk_import: 'bulk_import.html',
+    admission_form_settings: 'admission_form_settings.html',
+    admission_reports: 'admission_reports.html',
+    reports_hub: 'reports_hub.html',
     settings: 'settings.html',
     permissions: 'permissions.html',
     branch_registration: 'branch_registration.html',
     aboutme: 'aboutme.html',
     student_portal: 'student_portal.html',
-    teacher_portal: 'teacher_portal.html'
+    teacher_portal: 'teacher_portal.html',
+    parent_portal: 'parent_portal.html',
+    backup_settings: 'backup_settings.html'
 };
 
 function normalizeClientPageName(pageValue = '') {
@@ -783,14 +795,18 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('Sidebar initializer skipped:', error);
         }
     });
+    dedupeSidebarLinks();
     renderAdminSidebarSequence();
+    dedupeSidebarLinks();
     applyGlobalBranding();
     window.setTimeout(() => {
         renderAdminSidebarSequence();
+        dedupeSidebarLinks();
         applyGlobalBranding();
     }, 0);
     window.setTimeout(() => {
         renderAdminSidebarSequence();
+        dedupeSidebarLinks();
         applyGlobalBranding();
     }, 250);
     initializeSidebarScrollMemory();
@@ -1134,6 +1150,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const branchRegistrationForm = document.getElementById('branchRegistrationForm');
     if (branchRegistrationForm) {
         renderBranches();
+        bindBranchImageField('branchPrincipalPictureFile', 'branchPrincipalPicturePreview', 'branchPrincipalPictureUrl');
+        bindBranchImageField('branchLogoFile', 'branchLogoPreview', 'branchLogoUrl');
         branchRegistrationForm.addEventListener('submit', handleBranchRegistrationSubmit);
     }
 
@@ -2717,6 +2735,33 @@ function initializeSidebarScrollMemory() {
     });
 }
 
+function normalizeSidebarLinkKey(link) {
+    if (!link) return '';
+    const href = String(link.getAttribute('href') || '').trim();
+    if (!href) return '';
+    return href
+        .replace(/\/+/g, '/')
+        .replace(/#$/, '')
+        .replace(/\/index\.html$/i, '/')
+        .toLowerCase();
+}
+
+function dedupeSidebarLinks() {
+    const navLinks = document.querySelector('.nav-links');
+    if (!navLinks) return;
+
+    const seen = new Set();
+    navLinks.querySelectorAll('a[href]').forEach((link) => {
+        const key = normalizeSidebarLinkKey(link);
+        if (!key) return;
+        if (seen.has(key)) {
+            link.remove();
+            return;
+        }
+        seen.add(key);
+    });
+}
+
 function ensureDesignationPermissionsNav() {
     const navLinks = document.querySelector('.nav-links');
     const loggedInUser = getLoggedInUser();
@@ -3230,6 +3275,8 @@ function ensureAdminSidebarCompleteness() {
         { page: 'banners.html', label: 'Banners', icon: 'image' },
         { page: 'classes.html', label: 'Classes', icon: 'school' },
         { page: 'students.html', label: 'Students', icon: 'users' },
+        { page: 'bulk_import.html', label: 'Bulk Import', icon: 'upload' },
+        { page: 'admission_form_settings.html', label: 'Admission Form', icon: 'file-pen-line' },
         { page: 'student_scheduling.html', label: 'Students Scheduling', icon: 'calendar-clock' },
         { page: 'families.html', label: 'Families', icon: 'home' },
         { page: 'teachers.html', label: 'Teachers', icon: 'book-open' },
@@ -3245,6 +3292,9 @@ function ensureAdminSidebarCompleteness() {
         { page: 'exam_result_history.html', label: 'Result History', icon: 'history' },
         { page: 'exams.html', label: 'Result Cards', icon: 'badge-check' },
         { page: 'revenue.html', label: 'Revenue', icon: 'trending-up' },
+        { page: 'expense_management.html', label: 'Expense Management', icon: 'receipt-text' },
+        { page: 'session_management.html', label: 'Session Management', icon: 'calendar-range' },
+        { page: 'reports_hub.html', label: 'Reports Hub', icon: 'folder-kanban' },
         { page: 'teacher_salaries.html', label: 'Salaries', icon: 'wallet' },
         { page: 'bills.html', label: 'Bills', icon: 'receipt' },
         { page: 'notifications.html', label: 'Notifications', icon: 'bell-ring' },
@@ -3329,6 +3379,8 @@ function renderAdminSidebarSequence() {
         { type: 'link', page: 'banners.html', label: 'Banners', icon: 'image' },
         { type: 'link', page: 'classes.html', label: 'Classes', icon: 'school' },
         { type: 'link', page: 'students.html', label: 'Students', icon: 'users' },
+        { type: 'link', page: 'bulk_import.html', label: 'Bulk Import', icon: 'upload' },
+        { type: 'link', page: 'admission_form_settings.html', label: 'Admission Form', icon: 'file-pen-line' },
         { type: 'link', page: 'student_scheduling.html', label: 'Students Scheduling', icon: 'calendar-clock' },
         { type: 'link', page: 'families.html', label: 'Families', icon: 'home' },
         { type: 'link', page: 'teachers.html', label: 'Teachers', icon: 'book-open' },
@@ -3373,6 +3425,9 @@ function renderAdminSidebarSequence() {
             icon: 'landmark',
             children: [
                 { page: 'revenue.html', label: 'Revenue', icon: 'trending-up' },
+                { page: 'expense_management.html', label: 'Expense Management', icon: 'receipt-text' },
+                { page: 'session_management.html', label: 'Session Management', icon: 'calendar-range' },
+                { page: 'reports_hub.html', label: 'Reports Hub', icon: 'folder-kanban' },
                 { page: 'teacher_salaries.html', label: 'Salaries', icon: 'wallet' },
                 { page: 'bills.html', label: 'Bills', icon: 'receipt' }
             ]
@@ -3520,7 +3575,7 @@ async function renderBranches() {
     if (!tbody) return;
 
     try {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading branches...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading branches...</td></tr>';
         const response = await fetch(`${API_BASE_URL}/branches`);
         const responseText = await response.text();
         let branches = [];
@@ -3540,7 +3595,7 @@ async function renderBranches() {
     } catch (error) {
         branchRecordsCache = [];
         updateBranchAccessSummary([]);
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 1rem; color: #dc2626;">Branches could not be loaded. Please refresh and try again.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 1rem; color: #dc2626;">Branches could not be loaded. Please refresh and try again.</td></tr>';
     }
 }
 
@@ -3553,7 +3608,7 @@ function renderBranchRows(branches = []) {
         updateBranchAccessSummary(branches);
         tbody.innerHTML = '';
         if (!Array.isArray(branches) || branches.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 1rem; color: var(--text-secondary);">No branches registered yet.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 1rem; color: var(--text-secondary);">No branches registered yet.</td></tr>';
             return;
         }
 
@@ -3562,6 +3617,13 @@ function renderBranchRows(branches = []) {
             row.innerHTML = `
                 <td><strong>${branch.campusName || '-'}</strong></td>
                 <td>${branch.fullName || '-'}</td>
+                <td>
+                    <div>${branch.principalName || '-'}</div>
+                    <small style="color: var(--text-secondary);">${branch.email || ''}</small>
+                </td>
+                <td>${branch.branchContact || '-'}</td>
+                <td>${branch.branchCode || '-'}</td>
+                <td>${branch.studentAccessLimit || '-'}</td>
                 <td>${branch.username || '-'}</td>
                 <td>${branch.plainPassword || 'Hidden'}</td>
                 <td>${branch.isActive === false ? 'Inactive' : 'Active'}</td>
@@ -3582,7 +3644,7 @@ function renderBranchRows(branches = []) {
     } catch (error) {
         branchRecordsCache = [];
         updateBranchAccessSummary([]);
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 1rem; color: #dc2626;">Branches could not be displayed.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 1rem; color: #dc2626;">Branches could not be displayed.</td></tr>';
     }
 }
 
@@ -3885,6 +3947,73 @@ function updateBranchAccessSummary(branches = []) {
     }
 }
 
+function getBranchImagePreviewElement(previewId) {
+    return document.getElementById(previewId);
+}
+
+function renderBranchImagePreview(previewId, imageSrc = '', emptyText = 'No image selected') {
+    const preview = getBranchImagePreviewElement(previewId);
+    if (!preview) return;
+
+    const oldObjectUrl = preview.dataset.objectUrl;
+    if (oldObjectUrl) {
+        URL.revokeObjectURL(oldObjectUrl);
+        delete preview.dataset.objectUrl;
+    }
+
+    if (!imageSrc) {
+        preview.textContent = emptyText;
+        return;
+    }
+
+    preview.innerHTML = `<img src="${imageSrc}" alt="Selected image preview">`;
+}
+
+function bindBranchImageField(fileInputId, previewId, hiddenUrlId) {
+    const input = document.getElementById(fileInputId);
+    const hidden = document.getElementById(hiddenUrlId);
+    const preview = document.getElementById(previewId);
+    if (!input || !hidden || !preview || input.dataset.bound === 'true') return;
+
+    const syncPreview = () => {
+        const file = input.files && input.files[0];
+        if (!file) {
+            renderBranchImagePreview(previewId, hidden.value.trim(), 'No image selected');
+            return;
+        }
+
+        const objectUrl = URL.createObjectURL(file);
+        const oldObjectUrl = preview.dataset.objectUrl;
+        if (oldObjectUrl) URL.revokeObjectURL(oldObjectUrl);
+        preview.dataset.objectUrl = objectUrl;
+        preview.innerHTML = `<img src="${objectUrl}" alt="${file.name || 'Selected image'}">`;
+    };
+
+    input.addEventListener('change', syncPreview);
+    input.dataset.bound = 'true';
+    syncPreview();
+}
+
+async function uploadBranchImage(file, category = 'profile') {
+    if (!file) return '';
+
+    const formData = new FormData();
+    formData.append('category', category);
+    formData.append('file', file, file.name || 'upload.jpg');
+
+    const token = sessionStorage.getItem('eduCore_token') || '';
+    const response = await fetch(`${API_BASE_URL}/upload`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${sessionStorage.getItem('eduCore_token')}` } : {},
+        body: formData
+    });
+    const result = await parseJsonResponse(response, 'Image upload failed.');
+    if (!response.ok || result?.success === false) {
+        throw new Error(result?.message || 'Image upload failed.');
+    }
+    return result?.url || result?.file?.url || '';
+}
+
 async function handleBranchRegistrationSubmit(event) {
     event.preventDefault();
 
@@ -3892,6 +4021,18 @@ async function handleBranchRegistrationSubmit(event) {
     const recordId = document.getElementById('branchRecordId').value.trim();
     const campusName = document.getElementById('branchCampusName').value.trim();
     const fullName = document.getElementById('branchDisplayName').value.trim() || campusName;
+    const principalName = document.getElementById('branchPrincipalName')?.value.trim() || '';
+    const branchContact = document.getElementById('branchContact')?.value.trim() || '';
+    const branchCode = document.getElementById('branchCode')?.value.trim() || '';
+    const studentAccessLimit = document.getElementById('branchAccessLimit')?.value.trim() || '';
+    const additionDate = document.getElementById('branchAdditionDate')?.value.trim() || '';
+    const endingDate = document.getElementById('branchEndingDate')?.value.trim() || '';
+    const email = document.getElementById('branchEmail')?.value.trim() || '';
+    const principalPictureFile = document.getElementById('branchPrincipalPictureFile')?.files?.[0] || null;
+    const principalPictureUrl = document.getElementById('branchPrincipalPictureUrl')?.value.trim() || '';
+    const logoFile = document.getElementById('branchLogoFile')?.files?.[0] || null;
+    const logoUrl = document.getElementById('branchLogoUrl')?.value.trim() || '';
+    const address = document.getElementById('branchAddress')?.value.trim() || '';
     const username = document.getElementById('branchUsername').value.trim();
     const password = document.getElementById('branchPassword').value.trim();
 
@@ -3906,13 +4047,37 @@ async function handleBranchRegistrationSubmit(event) {
             submitButton.innerHTML = '<i data-lucide="loader-circle"></i> Saving...';
             if (window.lucide) window.lucide.createIcons();
         }
+
+        const principalPicture = principalPictureFile
+            ? await uploadBranchImage(principalPictureFile, 'profile')
+            : principalPictureUrl;
+        const logo = logoFile
+            ? await uploadBranchImage(logoFile, 'general')
+            : logoUrl;
+
         const response = await fetch(`${API_BASE_URL}/branches`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 ...(sessionStorage.getItem('eduCore_token') ? { Authorization: `Bearer ${sessionStorage.getItem('eduCore_token')}` } : {})
             },
-            body: JSON.stringify({ id: recordId || undefined, campusName, fullName, username, password })
+            body: JSON.stringify({
+                id: recordId || undefined,
+                campusName,
+                fullName,
+                principalName,
+                branchContact,
+                branchCode,
+                studentAccessLimit,
+                additionDate,
+                endingDate,
+                email,
+                principalPicture,
+                logo,
+                address,
+                username,
+                password
+            })
         });
 
         const result = await parseJsonResponse(
@@ -3947,8 +4112,30 @@ function editBranch(branch) {
     document.getElementById('branchRecordId').value = branch.id || '';
     document.getElementById('branchCampusName').value = branch.campusName || '';
     document.getElementById('branchDisplayName').value = branch.fullName || '';
+    const principalNameEl = document.getElementById('branchPrincipalName');
+    const branchContactEl = document.getElementById('branchContact');
+    const branchCodeEl = document.getElementById('branchCode');
+    const branchAccessLimitEl = document.getElementById('branchAccessLimit');
+    const branchAdditionDateEl = document.getElementById('branchAdditionDate');
+    const branchEndingDateEl = document.getElementById('branchEndingDate');
+    const branchEmailEl = document.getElementById('branchEmail');
+    const branchPrincipalPictureUrlEl = document.getElementById('branchPrincipalPictureUrl');
+    const branchLogoUrlEl = document.getElementById('branchLogoUrl');
+    const branchAddressEl = document.getElementById('branchAddress');
+    if (principalNameEl) principalNameEl.value = branch.principalName || '';
+    if (branchContactEl) branchContactEl.value = branch.branchContact || '';
+    if (branchCodeEl) branchCodeEl.value = branch.branchCode || '';
+    if (branchAccessLimitEl) branchAccessLimitEl.value = branch.studentAccessLimit || '';
+    if (branchAdditionDateEl) branchAdditionDateEl.value = branch.additionDate || '';
+    if (branchEndingDateEl) branchEndingDateEl.value = branch.endingDate || '';
+    if (branchEmailEl) branchEmailEl.value = branch.email || '';
+    if (branchPrincipalPictureUrlEl) branchPrincipalPictureUrlEl.value = branch.principalPicture || '';
+    if (branchLogoUrlEl) branchLogoUrlEl.value = branch.logo || '';
+    if (branchAddressEl) branchAddressEl.value = branch.address || '';
     document.getElementById('branchUsername').value = branch.username || '';
     document.getElementById('branchPassword').value = branch.plainPassword || '';
+    renderBranchImagePreview('branchPrincipalPicturePreview', branch.principalPicture || '', 'No image selected');
+    renderBranchImagePreview('branchLogoPreview', branch.logo || '', 'No image selected');
 
     const submitButton = document.querySelector('#branchRegistrationForm button[type="submit"]');
     if (submitButton) {
@@ -3964,6 +4151,17 @@ function resetBranchRegistrationForm() {
 
     form.reset();
     document.getElementById('branchRecordId').value = '';
+    ['branchPrincipalName', 'branchContact', 'branchCode', 'branchAccessLimit', 'branchAdditionDate', 'branchEndingDate', 'branchEmail', 'branchPrincipalPictureUrl', 'branchLogoUrl', 'branchAddress']
+        .forEach((fieldId) => {
+            const field = document.getElementById(fieldId);
+            if (field) field.value = '';
+        });
+    const principalFile = document.getElementById('branchPrincipalPictureFile');
+    const logoFile = document.getElementById('branchLogoFile');
+    if (principalFile) principalFile.value = '';
+    if (logoFile) logoFile.value = '';
+    renderBranchImagePreview('branchPrincipalPicturePreview', '', 'No image selected');
+    renderBranchImagePreview('branchLogoPreview', '', 'No image selected');
 
     const submitButton = document.querySelector('#branchRegistrationForm button[type="submit"]');
     if (submitButton) {
@@ -4762,6 +4960,1004 @@ async function updateDashboardRevenueStats(studentsForDashboard) {
     }
 }
 
+function getDashboardTodayDateKey() {
+    return new Date().toISOString().slice(0, 10);
+}
+
+function getDashboardMonthKeyFromDate(date = new Date()) {
+    const resolved = date instanceof Date ? date : new Date(date);
+    if (Number.isNaN(resolved.getTime())) return getCurrentDashboardFeeMonthKey();
+    return `${resolved.getFullYear()}-${String(resolved.getMonth() + 1).padStart(2, '0')}`;
+}
+
+function getDashboardDateKey(value = '') {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return '';
+    return parsed.toISOString().slice(0, 10);
+}
+
+function getDashboardShortDateLabel(value = '') {
+    const raw = String(value || '').trim();
+    if (!raw) return '-';
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return raw;
+    return parsed.toLocaleDateString('en-PK', { day: 'numeric', month: 'short' });
+}
+
+function formatDashboardSignedCurrency(amount) {
+    const value = Math.round(Number(amount || 0));
+    const prefix = value < 0 ? '-' : '';
+    return `PKR ${prefix}${Math.abs(value).toLocaleString('en-PK')}`;
+}
+
+function getDashboardCampusLabel() {
+    const selectedCampus = getSelectedDashboardCampus();
+    return selectedCampus === 'all' ? 'All Campuses' : selectedCampus;
+}
+
+function getDashboardCurrentYear() {
+    return new Date().getFullYear();
+}
+
+function getDashboardAttendanceStatusByDate(store = {}, entityId = '', dateKey = '') {
+    const monthKey = dateKey.slice(0, 7);
+    const dayIndex = Number(dateKey.slice(8, 10)) - 1;
+    if (!monthKey || dayIndex < 0) return 'Not Marked';
+    const directKey = `${entityId}_${monthKey}`;
+    const legacyKey = `teacher_${entityId}_${monthKey}`;
+    const rawRecord = Array.isArray(store?.[directKey])
+        ? store[directKey]
+        : (Array.isArray(store?.[legacyKey]) ? store[legacyKey] : []);
+    const status = normalizeAttendanceStatus(rawRecord[dayIndex] || '');
+    return status || 'Not Marked';
+}
+
+function getDashboardBirthdayInfo(record = {}, referenceDate = new Date()) {
+    const dobRaw = String(record?.dob || record?.dateOfBirth || record?.birthDate || '').trim();
+    if (!dobRaw) return null;
+    const dob = new Date(dobRaw);
+    if (Number.isNaN(dob.getTime())) return null;
+
+    const month = dob.getMonth();
+    const day = dob.getDate();
+    const thisYearBirthday = new Date(referenceDate.getFullYear(), month, day);
+    let nextBirthday = thisYearBirthday;
+    if (nextBirthday < new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate())) {
+        nextBirthday = new Date(referenceDate.getFullYear() + 1, month, day);
+    }
+
+    const diffDays = Math.ceil((nextBirthday - new Date(referenceDate.getFullYear(), referenceDate.getMonth(), referenceDate.getDate())) / 86400000);
+    return {
+        nextBirthday,
+        diffDays,
+        monthKey: getDashboardMonthKeyFromDate(nextBirthday)
+    };
+}
+
+function getDashboardUpcomingBirthdays(records = [], limitDays = 30) {
+    const today = new Date();
+    return (Array.isArray(records) ? records : [])
+        .map((record) => {
+            const info = getDashboardBirthdayInfo(record, today);
+            if (!info || info.diffDays > limitDays) return null;
+            return {
+                ...record,
+                ...info
+            };
+        })
+        .filter(Boolean)
+        .sort((a, b) => a.diffDays - b.diffDays);
+}
+
+function getDashboardRecordFeeAmount(student = {}) {
+    return Math.max(getDashboardStudentFee(student), 0);
+}
+
+function getDashboardStudentAttendanceRecord(store = {}, studentId = '', dateKey = '') {
+    const records = Array.isArray(store?.[studentId]) ? store[studentId] : [];
+    return records.find((record) => getDashboardDateKey(record?.date) === dateKey)?.status || 'Not Marked';
+}
+
+function getDashboardCurrentMonthKey() {
+    return getCurrentDashboardFeeMonthKey();
+}
+
+function getDashboardMonthlyAdmissions(students = []) {
+    const monthKey = getDashboardCurrentMonthKey();
+    const currentYear = getDashboardCurrentYear();
+    const monthlySeries = Array.from({ length: 12 }, (_, index) => ({
+        label: new Date(currentYear, index, 1).toLocaleString('en-US', { month: 'short' }),
+        value: 0
+    }));
+    const currentMonthCount = (Array.isArray(students) ? students : []).reduce((count, student) => {
+        const rawDate = student?.admissionDate || student?.createdAt || '';
+        const dateKey = getDashboardDateKey(rawDate);
+        if (!dateKey) return count;
+        const monthKeyOfRecord = dateKey.slice(0, 7);
+        const year = Number(dateKey.slice(0, 4));
+        if (year === currentYear) {
+            const monthIndex = Number(dateKey.slice(5, 7)) - 1;
+            if (monthIndex >= 0 && monthIndex < 12) monthlySeries[monthIndex].value += 1;
+        }
+        return monthKeyOfRecord === monthKey ? count + 1 : count;
+    }, 0);
+
+    return {
+        currentMonthCount,
+        series: monthlySeries,
+        year: currentYear
+    };
+}
+
+function getDashboardPaymentsByMonth(payments = [], year = getDashboardCurrentYear(), students = []) {
+    const monthlySeries = Array.from({ length: 12 }, (_, index) => ({
+        label: new Date(year, index, 1).toLocaleString('en-US', { month: 'short' }),
+        value: 0
+    }));
+    const studentList = Array.isArray(students) ? students : [];
+
+    (Array.isArray(payments) ? payments : []).forEach((payment) => {
+        if (!isDashboardFeeCollectionPayment(payment)) return;
+        if (studentList.length) {
+            const matchedStudent = studentList.find((student) => String(student.id || '') === String(payment.studentId || '')) ||
+                studentList.find((student) => String(student.rollNo || '').trim().toLowerCase() === String(payment.rollNo || '').trim().toLowerCase()) ||
+                studentList.find((student) => `${String(student.fullName || '').trim().toLowerCase()}|${String(student.rollNo || '').trim().toLowerCase()}|${String(student.classGrade || '').trim().toLowerCase()}` === `${String(payment.studentName || '').trim().toLowerCase()}|${String(payment.rollNo || '').trim().toLowerCase()}|${String(payment.classGrade || '').trim().toLowerCase()}`);
+            if (!matchedStudent) return;
+        }
+        const paidDate = getDashboardDateKey(payment?.paidAt || payment?.paymentDateLabel || payment?.createdAt || '');
+        if (!paidDate) return;
+        if (Number(paidDate.slice(0, 4)) !== year) return;
+        const monthIndex = Number(paidDate.slice(5, 7)) - 1;
+        if (monthIndex < 0 || monthIndex > 11) return;
+        monthlySeries[monthIndex].value += Math.max(parseDashboardAmount(payment?.amount), 0);
+    });
+
+    return monthlySeries;
+}
+
+function renderDashboardBarChart(containerId, series = [], options = {}) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const items = Array.isArray(series) ? series : [];
+    const maxValue = Math.max(...items.map((item) => Number(item?.value || 0)), 0);
+    const currency = options.currency === true;
+    const valueFormatter = options.valueFormatter || ((value) => (currency ? formatDashboardCurrency(value) : String(Math.round(Number(value || 0)))));
+
+    if (!items.length) {
+        container.innerHTML = '<div class="dashboard-mini-note">No data available.</div>';
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="dashboard-chart-bars">
+            ${items.map((item) => {
+                const value = Math.max(Number(item?.value || 0), 0);
+                const ratio = maxValue > 0 ? Math.max((value / maxValue) * 100, value > 0 ? 8 : 0) : 8;
+                return `
+                    <div class="dashboard-chart-bar">
+                        <div class="dashboard-chart-bar-track">
+                            <div class="dashboard-chart-bar-fill" style="height:${ratio}%"></div>
+                        </div>
+                        <div class="dashboard-chart-label">${escapeHtml(item?.label || '')}</div>
+                        <div class="dashboard-chart-value">${escapeHtml(valueFormatter(value))}</div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+function renderDashboardList(containerId, items = [], emptyText = 'No records found.') {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const list = Array.isArray(items) ? items : [];
+    if (!list.length) {
+        container.innerHTML = `<div class="dashboard-mini-note">${escapeHtml(emptyText)}</div>`;
+        return;
+    }
+    container.innerHTML = list.map((item) => item).join('');
+}
+
+function getDashboardDetailModalElements() {
+    return {
+        overlay: document.getElementById('dashboardDetailOverlay'),
+        title: document.getElementById('dashboardDetailTitle'),
+        subtitle: document.getElementById('dashboardDetailSubtitle'),
+        body: document.getElementById('dashboardDetailBody')
+    };
+}
+
+function closeDashboardDetailModal() {
+    const { overlay } = getDashboardDetailModalElements();
+    if (!overlay) return;
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden', 'true');
+}
+
+function openDashboardDetailModal(type = '') {
+    const { overlay, title, subtitle, body } = getDashboardDetailModalElements();
+    if (!overlay || !title || !subtitle || !body) return;
+
+    const state = dashboardDetailState || {};
+    const currency = (value) => formatDashboardCurrency(value);
+    const detailGrid = (items = []) => `
+        <div class="dashboard-detail-grid">
+            ${items.map((item) => `
+                <div class="dashboard-detail-block">
+                    <strong>${escapeHtml(item.label || '-')}</strong>
+                    <span>${escapeHtml(item.value || '-')}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    const detailList = (items = [], emptyText = 'No records found.') => {
+        const rows = Array.isArray(items) ? items : [];
+        if (!rows.length) return `<div class="dashboard-mini-note">${escapeHtml(emptyText)}</div>`;
+        return `<div class="dashboard-detail-list">${rows.join('')}</div>`;
+    };
+
+    let modalTitle = 'Details';
+    let modalSubtitle = 'Dashboard information';
+    let modalBody = '';
+
+    if (type === 'new-admissions') {
+        modalTitle = 'New Admissions';
+        modalSubtitle = `${state.admissionsThisMonth?.length || 0} admissions in ${state.paymentMonthSummary || 'current month'}`;
+        modalBody = detailList((state.admissionsThisMonth || []).map((student) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(student.fullName || student.studentName || 'Student')}</strong>
+                    <span>${escapeHtml(student.classGrade || '-')} | ${escapeHtml(student.campusName || state.campusLabel || 'All Campuses')}</span>
+                </div>
+                <div class="item-value">${escapeHtml(getDashboardShortDateLabel(student.admissionDate || student.createdAt || ''))}</div>
+            </div>
+        `), 'No new admissions found for this month.');
+    } else if (type === 'fee-summary' || type === 'fee-details') {
+        modalTitle = 'Fee Details Current Month';
+        modalSubtitle = `${state.monthLabel || 'Current month'} fee summary`;
+        modalBody = [
+            detailGrid([
+                { label: 'Total Receivable', value: currency(state.receivable || 0) },
+                { label: 'Received', value: currency(state.received || 0) },
+                { label: 'Due', value: currency(state.due || 0) },
+                { label: 'Campus', value: state.campusLabel || 'All Campuses' }
+            ]),
+            '<div style="height:0.9rem;"></div>',
+            detailList((state.feePaidToday || []).map((item) => `
+                <div class="dashboard-list-item">
+                    <div>
+                        <strong>${escapeHtml(item.className || 'Class')}</strong>
+                        <span>${item.count} student${item.count === 1 ? '' : 's'} paid today</span>
+                    </div>
+                    <div class="item-value">${escapeHtml(currency(item.amount || 0))}</div>
+                </div>
+            `), 'No fee payments recorded today.')
+        ].join('');
+    } else if (type === 'student-attendance') {
+        modalTitle = 'Student Attendance Today';
+        modalSubtitle = `${state.studentPresent || 0} present, ${state.studentAbsent || 0} absent`;
+        modalBody = detailGrid([
+            { label: 'Present', value: String(state.studentPresent || 0) },
+            { label: 'Absent', value: String(state.studentAbsent || 0) },
+            { label: 'Marked', value: String(state.studentMarked || 0) },
+            { label: 'Campus', value: state.campusLabel || 'All Campuses' }
+        ]);
+    } else if (type === 'staff-attendance') {
+        modalTitle = 'Staff Attendance Today';
+        modalSubtitle = `${state.staffPresent || 0} present, ${state.staffAbsent || 0} absent`;
+        modalBody = detailGrid([
+            { label: 'Present', value: String(state.staffPresent || 0) },
+            { label: 'Absent', value: String(state.staffAbsent || 0) },
+            { label: 'Marked', value: String(state.staffMarked || 0) },
+            { label: 'Campus', value: state.campusLabel || 'All Campuses' }
+        ]);
+    } else if (type === 'birthdays') {
+        modalTitle = 'Upcoming Birthdays';
+        modalSubtitle = `${state.birthdays?.length || 0} birthdays in the next 30 days`;
+        modalBody = detailList((state.birthdays || []).map((person) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(person.fullName || person.studentName || 'Person')}</strong>
+                    <span>${escapeHtml(person.classGrade || person.designation || person.subject || person.campusName || 'School')}</span>
+                </div>
+                <div class="item-value">${person.diffDays === 0 ? 'Today' : `${person.diffDays} days`}</div>
+            </div>
+        `), 'No upcoming birthdays in the next 30 days.');
+    } else if (type === 'profit-loss') {
+        modalTitle = 'Today Profit and Loss';
+        modalSubtitle = 'Fees received minus expenses today';
+        modalBody = detailGrid([
+            { label: 'Fee Received Today', value: currency(state.feeReceivedToday || 0) },
+            { label: 'Salary Expense Today', value: currency(state.staffSalaryExpenseToday || 0) },
+            { label: 'Bill Expense Today', value: currency(state.billsTodayExpense || 0) },
+            { label: 'Net Profit / Loss', value: formatDashboardSignedCurrency(state.todayProfitLoss || 0) }
+        ]);
+    } else if (type === 'admission-graph') {
+        modalTitle = 'Admission Graph Yearly';
+        modalSubtitle = `Monthly admissions for ${state.currentYear || new Date().getFullYear()}`;
+        modalBody = detailList((state.admissionsSeries || []).map((item) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(item.label || '-')}</strong>
+                    <span>Monthly admissions</span>
+                </div>
+                <div class="item-value">${escapeHtml(String(item.value || 0))}</div>
+            </div>
+        `), 'No admission data found.');
+    } else if (type === 'fee-graph') {
+        modalTitle = 'Fee Graph Yearly';
+        modalSubtitle = `Monthly fee received for ${state.currentYear || new Date().getFullYear()}`;
+        modalBody = detailList((state.feeSeries || []).map((item) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(item.label || '-')}</strong>
+                    <span>Monthly fee received</span>
+                </div>
+                <div class="item-value">${escapeHtml(currency(item.value || 0))}</div>
+            </div>
+        `), 'No fee payment data found.');
+    } else if (type === 'calendar') {
+        modalTitle = 'School Academic Calendar';
+        modalSubtitle = state.monthLabel || 'Current month';
+        modalBody = detailList((state.calendarNotes || []).map((note) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(note.title || '-')}</strong>
+                    <span>${escapeHtml(note.date || '-')} ${note.note ? `| ${escapeHtml(note.note)}` : ''}</span>
+                </div>
+                <div class="item-value">${escapeHtml(note.hasEvent ? 'Event' : 'Note')}</div>
+            </div>
+        `), 'No calendar reminders saved for this month.');
+    } else if (type === 'events') {
+        modalTitle = 'Event Management';
+        modalSubtitle = 'Special notices and recent admissions';
+        modalBody = detailList((state.eventRows || []).map((row) => row), 'No notices or admissions found.');
+    } else if (type === 'fee-paid-today') {
+        modalTitle = 'Class Wise Fee Paid Today';
+        modalSubtitle = `${(state.feePaidToday || []).length} classes with fee payments today`;
+        modalBody = detailList((state.feePaidToday || []).map((item) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(item.className || 'Class')}</strong>
+                    <span>${item.count} student${item.count === 1 ? '' : 's'} paid fee today</span>
+                </div>
+                <div class="item-value">${escapeHtml(currency(item.amount || 0))}</div>
+            </div>
+        `), 'No fee payments recorded today.');
+    } else if (type === 'absent-today') {
+        modalTitle = 'Class Wise Absent Today';
+        modalSubtitle = `${(state.studentAbsent || 0)} absent students today`;
+        modalBody = detailList((state.studentAbsentList || []).map((item) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(item.className || 'Class')}</strong>
+                    <span>${item.count} student${item.count === 1 ? '' : 's'} absent today</span>
+                </div>
+                <div class="item-value">${String(item.count || 0)}</div>
+            </div>
+        `), 'No absent students recorded today.');
+    } else {
+        modalTitle = 'Dashboard Details';
+        modalSubtitle = state.campusLabel || 'All Campuses';
+        modalBody = '<div class="dashboard-mini-note">No detail available.</div>';
+    }
+
+    title.textContent = modalTitle;
+    subtitle.textContent = modalSubtitle;
+    body.innerHTML = modalBody;
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden', 'false');
+    if (window.lucide) window.lucide.createIcons();
+}
+
+function bindDashboardDetailModal() {
+    if (dashboardDetailModalBound) return;
+    dashboardDetailModalBound = true;
+
+    document.addEventListener('click', (event) => {
+        const closeBtn = event.target.closest('#dashboardDetailClose');
+        if (closeBtn) {
+            closeDashboardDetailModal();
+            return;
+        }
+
+        const overlay = event.target.closest('#dashboardDetailOverlay');
+        if (overlay && event.target === overlay) {
+            closeDashboardDetailModal();
+            return;
+        }
+
+        const trigger = event.target.closest('[data-dashboard-detail]');
+        if (!trigger) return;
+        if (event.target.closest('a, button, input, textarea, select')) return;
+        openDashboardDetailModal(trigger.getAttribute('data-dashboard-detail'));
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeDashboardDetailModal();
+        if (event.key === 'Enter' || event.key === ' ') {
+            const active = document.activeElement?.closest?.('[data-dashboard-detail]');
+            if (active) {
+                event.preventDefault();
+                openDashboardDetailModal(active.getAttribute('data-dashboard-detail'));
+            }
+        }
+    });
+}
+
+function buildDashboardClassSummary(items = [], emptyText = 'No records found.') {
+    if (!Array.isArray(items) || !items.length) return `<div class="dashboard-mini-note">${escapeHtml(emptyText)}</div>`;
+    return items.map((item) => `
+        <div class="dashboard-list-item">
+            <div>
+                <strong>${escapeHtml(item.title || '-')}</strong>
+                <span>${escapeHtml(item.subtitle || '')}</span>
+            </div>
+            <div class="item-value">${escapeHtml(item.value || '')}</div>
+        </div>
+    `).join('');
+}
+
+function getDashboardCalendarNotes() {
+    try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY_DASHBOARD_CALENDAR_NOTES) || '[]');
+        return Array.isArray(data)
+            ? data.filter((item) => item && item.date && item.title).map((item) => ({
+                id: String(item.id || ''),
+                date: String(item.date || '').slice(0, 10),
+                title: String(item.title || '').trim(),
+                note: String(item.note || '').trim(),
+                createdAt: item.createdAt || new Date().toISOString()
+            }))
+            : [];
+    } catch (_error) {
+        return [];
+    }
+}
+
+function saveDashboardCalendarNotes(notes = []) {
+    localStorage.setItem(STORAGE_KEY_DASHBOARD_CALENDAR_NOTES, JSON.stringify(Array.isArray(notes) ? notes : []));
+}
+
+function normalizeDashboardCalendarNote(note = {}) {
+    const date = getDashboardDateKey(note.date || note.noteDate || '');
+    const title = String(note.title || '').trim();
+    const noteText = String(note.note || note.message || '').trim();
+    if (!date || !title) return null;
+    return {
+        id: String(note.id || `CAL-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`),
+        date,
+        title,
+        note: noteText,
+        createdAt: note.createdAt || new Date().toISOString()
+    };
+}
+
+function renderDashboardCalendarNotes(monthMeta) {
+    const container = document.getElementById('dashCalendarNotesList');
+    if (!container) return;
+
+    const monthKey = monthMeta.monthKey;
+    const notes = getDashboardCalendarNotes()
+        .filter((note) => String(note.date || '').slice(0, 7) === monthKey)
+        .sort((a, b) => String(a.date).localeCompare(String(b.date)));
+
+    if (!notes.length) {
+        container.innerHTML = '<div class="dashboard-mini-note">No reminders saved for this month yet.</div>';
+        return;
+    }
+
+    container.innerHTML = notes.map((note) => `
+        <div class="dashboard-calendar-note-item">
+            <div>
+                <strong>${escapeHtml(note.title)}</strong>
+                ${note.note ? `<span>${escapeHtml(note.note)}</span>` : ''}
+            </div>
+            <div style="display:grid; gap:0.45rem; justify-items:end;">
+                <div class="dashboard-calendar-note-date">${escapeHtml(getDashboardShortDateLabel(note.date))}</div>
+                <div class="dashboard-calendar-note-actions">
+                    <button type="button" class="btn btn-outline" style="padding:0.28rem 0.55rem; font-size:0.72rem;" data-calendar-note-delete="${escapeHtml(note.id)}">Delete</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+
+    container.querySelectorAll('[data-calendar-note-delete]').forEach((button) => {
+        button.addEventListener('click', () => deleteDashboardCalendarNote(button.getAttribute('data-calendar-note-delete')));
+    });
+}
+
+function deleteDashboardCalendarNote(noteId) {
+    if (!noteId) return;
+    const notes = getDashboardCalendarNotes().filter((note) => String(note.id) !== String(noteId));
+    saveDashboardCalendarNotes(notes);
+    refreshDashboardCalendarWidgets();
+}
+
+function buildDashboardCalendar(monthMeta, eventsByDate = {}, notes = []) {
+    const container = document.getElementById('dashAcademicCalendar');
+    const monthLabel = document.getElementById('dashCalendarMonth');
+    if (!container) return;
+
+    const year = monthMeta.year;
+    const monthIndex = Number(monthMeta.monthKey.slice(5, 7)) - 1;
+    const firstDay = new Date(year, monthIndex, 1);
+    const startDay = firstDay.getDay();
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const todayKey = getDashboardTodayDateKey();
+    const noteMap = (Array.isArray(notes) ? notes : []).reduce((acc, note) => {
+        const dateKey = String(note.date || '').slice(0, 10);
+        if (!dateKey) return acc;
+        if (!acc[dateKey]) acc[dateKey] = [];
+        acc[dateKey].push(note);
+        return acc;
+    }, {});
+    const cells = [];
+
+    dayNames.forEach((name) => {
+        cells.push(`<div class="dashboard-calendar-day-name">${name}</div>`);
+    });
+
+    for (let i = 0; i < startDay; i += 1) {
+        cells.push('<div class="dashboard-calendar-day muted"></div>');
+    }
+
+    for (let day = 1; day <= daysInMonth; day += 1) {
+        const dateKey = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const items = [...(eventsByDate[dateKey] || [])];
+        const reminderNotes = noteMap[dateKey] || [];
+        reminderNotes.forEach((note) => {
+            items.push(note.note ? `${note.title}: ${note.note}` : note.title);
+        });
+        cells.push(`
+            <div class="dashboard-calendar-day${dateKey === todayKey ? ' today' : ''}">
+                <strong>${day}</strong>
+                ${items.slice(0, 2).map((item) => `<span class="dashboard-calendar-event">${escapeHtml(item)}</span>`).join('')}
+                ${items.length > 2 ? `<span class="dashboard-calendar-event">+${items.length - 2} more</span>` : ''}
+            </div>
+        `);
+    }
+
+    container.innerHTML = cells.join('');
+    if (monthLabel) monthLabel.textContent = firstDay.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+}
+
+function bindDashboardCalendarNotes() {
+    const form = document.getElementById('dashboardCalendarForm');
+    const dateInput = document.getElementById('dashboardCalendarDate');
+    const titleInput = document.getElementById('dashboardCalendarTitle');
+    const noteInput = document.getElementById('dashboardCalendarNote');
+    if (!form || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
+
+    if (dateInput && !dateInput.value) dateInput.value = getDashboardTodayDateKey();
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const note = normalizeDashboardCalendarNote({
+            date: dateInput?.value || '',
+            title: titleInput?.value || '',
+            note: noteInput?.value || ''
+        });
+        if (!note) {
+            alert('Date and title are required for calendar notes.');
+            return;
+        }
+
+        const notes = getDashboardCalendarNotes().filter((item) => String(item.id) !== String(note.id));
+        notes.unshift(note);
+        saveDashboardCalendarNotes(notes);
+        if (titleInput) titleInput.value = '';
+        if (noteInput) noteInput.value = '';
+        refreshDashboardCalendarWidgets();
+    });
+}
+
+function refreshDashboardCalendarWidgets() {
+    const currentMonthKey = getDashboardCurrentMonthKey();
+    const monthlyMeta = getDashboardMonthMeta(currentMonthKey);
+    const selectedStudents = getDashboardCampusFilteredRecords(getArrayData(STORAGE_KEY_STUDENTS));
+    const currentYear = getDashboardCurrentYear();
+    const admissionsSeries = Array.from({ length: 12 }, (_, index) => ({
+        label: new Date(currentYear, index, 1).toLocaleString('en-US', { month: 'short' }),
+        value: 0
+    }));
+    selectedStudents.forEach((student) => {
+        const dateKey = getDashboardDateKey(student?.admissionDate || student?.createdAt || '');
+        if (!dateKey || Number(dateKey.slice(0, 4)) !== currentYear) return;
+        const monthIndex = Number(dateKey.slice(5, 7)) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) admissionsSeries[monthIndex].value += 1;
+    });
+
+    const collectionsPromise = fetchDashboardCollections();
+    collectionsPromise.then((collections) => {
+        const eventsByDate = {};
+        (collections.notices || []).forEach((notice) => {
+            const dateKey = getDashboardDateKey(notice.noticeDate || notice.createdAt || '');
+            if (!dateKey) return;
+            if (!eventsByDate[dateKey]) eventsByDate[dateKey] = [];
+            eventsByDate[dateKey].push(notice.title || 'Special Notice');
+        });
+        (collections.admissions || []).forEach((application) => {
+            const dateKey = getDashboardDateKey(application.createdAt || '');
+            if (!dateKey) return;
+            if (!eventsByDate[dateKey]) eventsByDate[dateKey] = [];
+            eventsByDate[dateKey].push(application.studentName || 'Admission');
+        });
+        const notes = getDashboardCalendarNotes();
+        notes.forEach((note) => {
+            const dateKey = String(note.date || '').slice(0, 10);
+            if (!dateKey) return;
+            if (!eventsByDate[dateKey]) eventsByDate[dateKey] = [];
+            eventsByDate[dateKey].push(note.title);
+        });
+        buildDashboardCalendar(monthlyMeta, eventsByDate, notes);
+        renderDashboardCalendarNotes(monthlyMeta);
+    }).catch(() => {
+        const notes = getDashboardCalendarNotes();
+        buildDashboardCalendar(monthlyMeta, {}, notes);
+        renderDashboardCalendarNotes(monthlyMeta);
+    });
+}
+
+async function fetchDashboardCollections() {
+    const [admissions, notices, payments] = await Promise.all([
+        fetch(`${API_BASE_URL}/online-admissions`).then((response) => response.json()).catch(() => ({ applications: [] })),
+        fetch(`${API_BASE_URL}/special-notices`).then((response) => response.json()).catch(() => ({ notices: [] })),
+        fetch(`${API_BASE_URL}/fees/payments`).then((response) => response.json()).catch(() => ({ payments: [] }))
+    ]);
+
+    return {
+        admissions: Array.isArray(admissions?.applications) ? admissions.applications : [],
+        notices: Array.isArray(notices?.notices) ? notices.notices : [],
+        payments: Array.isArray(payments?.payments) ? payments.payments : []
+    };
+}
+
+async function updateDashboardOverviewWidgets({ students = [], teachers = [], staffMembers = [] } = {}) {
+    const token = ++dashboardOverviewRenderToken;
+    const [
+        teacherSalaries,
+        collections
+    ] = await Promise.all([
+        Promise.resolve().then(() => getTeacherSalaries()),
+        fetchDashboardCollections()
+    ]);
+
+    if (token !== dashboardOverviewRenderToken) return;
+
+    const selectedCampus = getSelectedDashboardCampus();
+    const campusLabel = getDashboardCampusLabel();
+    const selectedStudents = Array.isArray(students) ? students : [];
+    const selectedTeachers = Array.isArray(teachers) ? teachers : [];
+    const selectedStaff = Array.isArray(staffMembers) ? staffMembers : [];
+    const allEmployees = [...selectedTeachers, ...selectedStaff];
+    const todayKey = getDashboardTodayDateKey();
+    const currentMonthKey = getDashboardCurrentMonthKey();
+    const currentYear = getDashboardCurrentYear();
+    const monthlyMeta = getDashboardMonthMeta(currentMonthKey);
+    const admissionsThisMonth = selectedStudents.filter((student) => {
+        const dateKey = getDashboardDateKey(student?.admissionDate || student?.createdAt || '');
+        return dateKey && dateKey.slice(0, 7) === currentMonthKey;
+    });
+
+    const backendFeeSummary = await getDashboardBackendFeeStatusRevenue(selectedStudents);
+    const currentMonthFeeSummary = backendFeeSummary?.loaded ? backendFeeSummary : getDashboardFeeStatusRevenue(selectedStudents);
+    const receivable = selectedStudents.reduce((total, student) => total + getDashboardRecordFeeAmount(student), 0);
+    const received = Math.max(Number(currentMonthFeeSummary?.total || 0), 0);
+    const due = Math.max(receivable - received, 0);
+
+    const studentAttendanceStore = getData(STORAGE_KEY_STUDENT_ATTENDANCE_CACHE) || {};
+    const employeeAttendanceStore = getData(STORAGE_KEY_TEACHER_ATTENDANCE) || {};
+    let studentPresent = 0;
+    let studentAbsent = 0;
+    let studentMarked = 0;
+    let staffPresent = 0;
+    let staffAbsent = 0;
+    let staffMarked = 0;
+
+    selectedStudents.forEach((student) => {
+        const status = getDashboardStudentAttendanceRecord(studentAttendanceStore, student.id, todayKey);
+        if (status === 'Present' || status === 'Late') studentPresent += 1;
+        if (status === 'Absent') studentAbsent += 1;
+        if (status !== 'Not Marked') studentMarked += 1;
+    });
+
+    allEmployees.forEach((employee) => {
+        const status = getDashboardAttendanceStatusByDate(employeeAttendanceStore, employee.id, todayKey);
+        if (status === 'Present' || status === 'Late') staffPresent += 1;
+        if (status === 'Absent') staffAbsent += 1;
+        if (status !== 'Not Marked') staffMarked += 1;
+    });
+
+    const birthdays = getDashboardUpcomingBirthdays([...selectedStudents, ...selectedTeachers, ...selectedStaff], 30);
+    const currentYearStudents = selectedStudents.filter((student) => {
+        const dateKey = getDashboardDateKey(student?.admissionDate || student?.createdAt || '');
+        return dateKey && Number(dateKey.slice(0, 4)) === currentYear;
+    });
+    const admissionsSeries = Array.from({ length: 12 }, (_, index) => ({
+        label: new Date(currentYear, index, 1).toLocaleString('en-US', { month: 'short' }),
+        value: 0
+    }));
+    currentYearStudents.forEach((student) => {
+        const dateKey = getDashboardDateKey(student?.admissionDate || student?.createdAt || '');
+        if (!dateKey) return;
+        const monthIndex = Number(dateKey.slice(5, 7)) - 1;
+        if (monthIndex >= 0 && monthIndex < 12) admissionsSeries[monthIndex].value += 1;
+    });
+    const feeSeries = getDashboardPaymentsByMonth(collections.payments, currentYear, selectedStudents);
+    const filteredAdmissions = selectedCampus === 'all'
+        ? collections.admissions
+        : collections.admissions.filter((application) => dashboardCampusMatches({
+            campusName: application.campus || application.campusName || application.branchName || ''
+        }, selectedCampus));
+
+    const staffSalaryExpenseToday = Object.values(teacherSalaries || {}).reduce((total, payment) => {
+        if (!payment || typeof payment !== 'object') return total;
+        const paymentDate = getDashboardDateKey(payment.date || payment.paidAt || payment.createdAt || '');
+        const amount = Number(payment.amount || 0);
+        if (paymentDate === todayKey && Number.isFinite(amount)) return total + Math.max(amount, 0);
+        return total;
+    }, 0);
+
+    const billsTodayExpense = getBills().reduce((total, bill) => {
+        const paymentDate = getDashboardDateKey(bill.paymentConfirmedDate || bill.paymentDate || bill.date || bill.createdAt || '');
+        const amount = parseFinanceAmount(bill.amount || 0);
+        if (paymentDate === todayKey && String(bill.status || '').toLowerCase() === 'paid') {
+            return total + amount;
+        }
+        return total;
+    }, 0);
+
+    const feeReceivedToday = collections.payments.reduce((total, payment) => {
+        if (!isDashboardFeeCollectionPayment(payment)) return total;
+        const paymentDate = getDashboardDateKey(payment?.paidAt || payment?.paymentDateLabel || payment?.createdAt || '');
+        if (paymentDate !== todayKey) return total;
+        const studentId = String(payment?.studentId || '');
+        const matchedStudent = selectedStudents.find((student) => String(student.id || '') === studentId) ||
+            selectedStudents.find((student) => String(student.rollNo || '').trim().toLowerCase() === String(payment?.rollNo || '').trim().toLowerCase());
+        if (!matchedStudent) return total;
+        return total + Math.max(parseDashboardAmount(payment?.amount), 0);
+    }, 0);
+
+    const todayProfitLoss = feeReceivedToday - (staffSalaryExpenseToday + billsTodayExpense);
+
+    const admissionsThisMonthCount = admissionsThisMonth.length;
+    const paymentMonthSummary = currentMonthFeeSummary?.month || `${monthlyMeta.monthName} ${monthlyMeta.year}`;
+
+    const admissionsCountEl = document.getElementById('dashNewAdmissionsMonth');
+    if (admissionsCountEl) admissionsCountEl.textContent = String(admissionsThisMonthCount);
+    const admissionsBadgeEl = document.getElementById('dashNewAdmissionsBadge');
+    if (admissionsBadgeEl) admissionsBadgeEl.textContent = paymentMonthSummary;
+
+    const feeReceivedEl = document.getElementById('dashFeeReceivedMonth');
+    const feePendingEl = document.getElementById('dashFeePendingMonth');
+    const feeReceivableEl = document.getElementById('dashFeeReceivableMonth');
+    const feeReceivedDetailEl = document.getElementById('dashFeeReceivedMonthDetail');
+    const feeDueEl = document.getElementById('dashFeeDueMonth');
+    if (feeReceivedEl) feeReceivedEl.textContent = formatDashboardCurrency(received);
+    if (feePendingEl) feePendingEl.textContent = `Pending fee: ${formatDashboardCurrency(due)} for ${campusLabel}`;
+    if (feeReceivableEl) feeReceivableEl.textContent = formatDashboardCurrency(receivable);
+    if (feeReceivedDetailEl) feeReceivedDetailEl.textContent = formatDashboardCurrency(received);
+    if (feeDueEl) feeDueEl.textContent = formatDashboardCurrency(due);
+    const feeMonthBadge = document.getElementById('dashFeeMonthBadge');
+    if (feeMonthBadge) feeMonthBadge.textContent = monthlyMeta.monthName;
+    const receivableBadge = document.getElementById('dashFeeReceivableBadge');
+    if (receivableBadge) receivableBadge.textContent = `${monthlyMeta.monthName} ${monthlyMeta.year}`;
+
+    const studentAttendanceEl = document.getElementById('dashStudentAttendanceDay');
+    if (studentAttendanceEl) studentAttendanceEl.textContent = `${studentPresent} / ${studentAbsent}`;
+    const staffAttendanceEl = document.getElementById('dashStaffAttendanceDay');
+    if (staffAttendanceEl) staffAttendanceEl.textContent = `${staffPresent} / ${staffAbsent}`;
+
+    const birthdayCountEl = document.getElementById('dashUpcomingBirthdaysCount');
+    const birthdayCountLabelEl = document.getElementById('dashBirthdaysCountLabel');
+    if (birthdayCountEl) birthdayCountEl.textContent = String(birthdays.length);
+    if (birthdayCountLabelEl) birthdayCountLabelEl.textContent = `${birthdays.length} birthday${birthdays.length === 1 ? '' : 's'}`;
+
+    const profitLossEl = document.getElementById('dashTodayProfitLoss');
+    const profitLossDetailEl = document.getElementById('dashTodayProfitLossDetail');
+    if (profitLossEl) profitLossEl.textContent = formatDashboardSignedCurrency(todayProfitLoss);
+    if (profitLossDetailEl) {
+        profitLossDetailEl.textContent = `Fees today ${formatDashboardCurrency(feeReceivedToday)} - expenses ${formatDashboardCurrency(staffSalaryExpenseToday + billsTodayExpense)}${selectedCampus === 'all' ? ' across all campuses' : ` at ${campusLabel}`}`;
+    }
+
+    const admissionGraphYear = document.getElementById('dashAdmissionGraphYear');
+    const feeGraphYear = document.getElementById('dashFeeGraphYear');
+    if (admissionGraphYear) admissionGraphYear.textContent = String(currentYear);
+    if (feeGraphYear) feeGraphYear.textContent = String(currentYear);
+    renderDashboardBarChart('dashAdmissionGraph', admissionsSeries, { currency: false, valueFormatter: (value) => String(Math.round(value)) });
+    renderDashboardBarChart('dashFeeGraph', feeSeries, { currency: true });
+
+    const eventItems = [
+        ...collections.notices
+            .slice()
+            .sort((a, b) => String(b.createdAt || b.noticeDate || '').localeCompare(String(a.createdAt || a.noticeDate || '')))
+            .slice(0, 6)
+            .map((notice) => {
+                const dateKey = getDashboardDateKey(notice.noticeDate || notice.createdAt || '');
+                const label = notice.status === 'executed' ? 'Executed' : 'Draft';
+                return {
+                    dateKey,
+                    html: `
+                        <div class="dashboard-list-item">
+                            <div>
+                                <strong>${escapeHtml(notice.title || 'Special Notice')}</strong>
+                                <span>${escapeHtml(notice.noticeDateLabel || getDashboardShortDateLabel(notice.noticeDate || notice.createdAt))} ${notice.message ? `- ${escapeHtml(String(notice.message).slice(0, 90))}${String(notice.message).length > 90 ? '...' : ''}` : ''}</span>
+                            </div>
+                            <div class="item-value">${escapeHtml(label)}</div>
+                        </div>
+                    `
+                };
+            }),
+        ...filteredAdmissions
+            .slice()
+            .sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || '')))
+            .slice(0, 4)
+            .map((application) => ({
+                dateKey: getDashboardDateKey(application.createdAt || ''),
+                html: `
+                    <div class="dashboard-list-item">
+                        <div>
+                            <strong>${escapeHtml(application.studentName || 'Admission')}</strong>
+                            <span>${escapeHtml(application.className || '-')} | ${escapeHtml(application.campus || campusLabel)}${application.phone ? ` | ${escapeHtml(application.phone)}` : ''}</span>
+                        </div>
+                        <div class="item-value">${escapeHtml(application.status || 'New')}</div>
+                    </div>
+                `
+            }))
+    ];
+
+    const groupedEvents = eventItems.reduce((acc, item) => {
+        if (!item.dateKey) return acc;
+        if (!acc[item.dateKey]) acc[item.dateKey] = [];
+        acc[item.dateKey].push(item.html);
+        return acc;
+    }, {});
+
+    const eventListItems = [
+        ...collections.notices.slice().sort((a, b) => String(b.createdAt || b.noticeDate || '').localeCompare(String(a.createdAt || a.noticeDate || ''))).slice(0, 3).map((notice) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(notice.title || 'Special Notice')}</strong>
+                    <span>${escapeHtml(notice.noticeDateLabel || getDashboardShortDateLabel(notice.noticeDate || notice.createdAt))} ${notice.targetPortals?.length ? `| ${escapeHtml(notice.targetPortals.join(', '))}` : ''}</span>
+                </div>
+                <div class="item-value">${escapeHtml(notice.status || 'draft')}</div>
+            </div>
+        `),
+        ...filteredAdmissions.slice().sort((a, b) => String(b.createdAt || '').localeCompare(String(a.createdAt || ''))).slice(0, 3).map((application) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(application.studentName || 'Admission')}</strong>
+                    <span>${escapeHtml(application.className || '-')} | ${escapeHtml(application.campus || campusLabel)}</span>
+                </div>
+                <div class="item-value">${escapeHtml(application.status || 'New')}</div>
+            </div>
+        `)
+    ];
+    renderDashboardList('dashEventList', eventListItems, 'No notices or admissions found.');
+
+    const birthdaysHtml = birthdays.map((person) => `
+        <div class="dashboard-list-item">
+            <div>
+                <strong>${escapeHtml(person.fullName || person.studentName || 'Person')}</strong>
+                <span>${escapeHtml(person.classGrade || person.designation || person.subject || person.campusName || 'School')} | ${escapeHtml(getDashboardShortDateLabel(person.dob || person.dateOfBirth || person.birthDate))}</span>
+            </div>
+            <div class="item-value">${person.diffDays === 0 ? 'Today' : `${person.diffDays} days`}</div>
+        </div>
+    `);
+    renderDashboardList('dashUpcomingBirthdays', birthdaysHtml, 'No upcoming birthdays in the next 30 days.');
+
+    const feePaidTodayMap = collections.payments.reduce((map, payment) => {
+        if (!isDashboardFeeCollectionPayment(payment)) return map;
+        const paymentDate = getDashboardDateKey(payment?.paidAt || payment?.paymentDateLabel || payment?.createdAt || '');
+        if (paymentDate !== todayKey) return map;
+        const matchedStudent = selectedStudents.find((student) => String(student.id || '') === String(payment.studentId || '')) ||
+            selectedStudents.find((student) => String(student.rollNo || '').trim().toLowerCase() === String(payment.rollNo || '').trim().toLowerCase()) ||
+            selectedStudents.find((student) => `${String(student.fullName || '').trim().toLowerCase()}|${String(student.rollNo || '').trim().toLowerCase()}|${String(student.classGrade || '').trim().toLowerCase()}` === `${String(payment.studentName || '').trim().toLowerCase()}|${String(payment.rollNo || '').trim().toLowerCase()}|${String(payment.classGrade || '').trim().toLowerCase()}`);
+        if (!matchedStudent) return map;
+        const className = String(matchedStudent.classGrade || 'Unassigned').trim() || 'Unassigned';
+        const amount = Math.max(parseDashboardAmount(payment.amount), 0);
+        const entry = map.get(className) || { count: 0, amount: 0 };
+        entry.count += 1;
+        entry.amount += amount;
+        map.set(className, entry);
+        return map;
+    }, new Map());
+
+    const feePaidTodayItems = [...feePaidTodayMap.entries()]
+        .sort((a, b) => b[1].amount - a[1].amount)
+        .map(([className, summary]) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(className)}</strong>
+                    <span>${summary.count} student${summary.count === 1 ? '' : 's'} paid today</span>
+                </div>
+                <div class="item-value">${escapeHtml(formatDashboardCurrency(summary.amount))}</div>
+            </div>
+        `);
+    renderDashboardList('dashPaidTodayByClass', feePaidTodayItems, 'No fee payments recorded today.');
+
+    const studentAbsentMap = selectedStudents.reduce((map, student) => {
+        const status = getDashboardStudentAttendanceRecord(studentAttendanceStore, student.id, todayKey);
+        if (status !== 'Absent') return map;
+        const className = String(student.classGrade || 'Unassigned').trim() || 'Unassigned';
+        const entry = map.get(className) || { count: 0 };
+        entry.count += 1;
+        map.set(className, entry);
+        return map;
+    }, new Map());
+
+    const studentAbsentItems = [...studentAbsentMap.entries()]
+        .sort((a, b) => b[1].count - a[1].count)
+        .map(([className, summary]) => `
+            <div class="dashboard-list-item">
+                <div>
+                    <strong>${escapeHtml(className)}</strong>
+                    <span>${summary.count} student${summary.count === 1 ? '' : 's'} absent today</span>
+                </div>
+                <div class="item-value">${summary.count}</div>
+            </div>
+        `);
+    renderDashboardList('dashAbsentTodayByClass', studentAbsentItems, 'No absent students recorded today.');
+
+    dashboardDetailState = {
+        admissionsThisMonth,
+        paymentMonthSummary,
+        campusLabel,
+        monthLabel: `${monthlyMeta.monthName} ${monthlyMeta.year}`,
+        receivable,
+        received,
+        due,
+        studentPresent,
+        studentAbsent,
+        studentMarked,
+        staffPresent,
+        staffAbsent,
+        staffMarked,
+        birthdays,
+        todayProfitLoss,
+        staffSalaryExpenseToday,
+        billsTodayExpense,
+        feeReceivedToday,
+        currentYear,
+        admissionsSeries,
+        feeSeries,
+        calendarNotes: getDashboardCalendarNotes(),
+        eventRows: eventListItems,
+        feePaidToday: [...feePaidTodayMap.entries()]
+            .sort((a, b) => b[1].amount - a[1].amount)
+            .map(([className, summary]) => ({
+                className,
+                count: summary.count,
+                amount: summary.amount
+            })),
+        studentAbsentList: [...studentAbsentMap.entries()]
+            .sort((a, b) => b[1].count - a[1].count)
+            .map(([className, summary]) => ({
+                className,
+                count: summary.count
+            }))
+    };
+
+    buildDashboardCalendar(monthlyMeta, groupedEvents, getDashboardCalendarNotes());
+    renderDashboardCalendarNotes(monthlyMeta);
+
+    const campusScopeNote = document.getElementById('dashboardCampusScopeNote');
+    if (campusScopeNote) {
+        campusScopeNote.textContent = selectedCampus === 'all'
+            ? 'All-campus stats are visible on the admin dashboard.'
+            : `Showing stats for ${campusLabel}.`;
+    }
+
+    if (window.lucide) window.lucide.createIcons();
+}
+
 // Preview Image
 document.addEventListener('change', (e) => {
     if (e.target && e.target.id === 'paymentReceipt') {
@@ -4813,6 +6009,9 @@ function updateDashboardStats() {
     if (document.getElementById('dashStaffCount')) document.getElementById('dashStaffCount').innerText = staffMembers.length || '0';
 
     updateDashboardRevenueStats(students);
+    updateDashboardOverviewWidgets({ students, teachers, staffMembers }).catch((error) => {
+        console.warn('Dashboard overview widgets could not be updated:', error.message);
+    });
 
     updateDashboardComplaintStats();
     updateDashboardBannerStats();
@@ -4867,6 +6066,14 @@ function initializeDashboardHome() {
     if (!dashStudentCount) return;
 
     initDashboardRevenueMonthPicker();
+    bindDashboardDetailModal();
+    bindDashboardCalendarNotes();
+    refreshDashboardCalendarWidgets();
+    Promise.allSettled([
+        loadStudentAttendanceFromSQL(),
+        loadTeacherAttendanceFromSQL(),
+        loadTeacherSalariesFromSQL()
+    ]).then(() => updateDashboardStats()).catch(() => updateDashboardStats());
     populateDashboardCampusFilter().then(updateDashboardStats).catch(() => updateDashboardStats());
     updateDashboardStats();
     if (!dashboardActiveSessionsInterval) {

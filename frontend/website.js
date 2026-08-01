@@ -6,6 +6,24 @@ const state = {
 };
 let activeBannerIndex = 0;
 let bannerTimer = null;
+const ADMISSION_FORM_SETTINGS_KEY = 'eduCore_admission_form_settings';
+const DEFAULT_ADMISSION_FORM_SETTINGS = {
+    title: 'Apply online for admission.',
+    description: 'Fill the admission form and the school office will receive your application in the portal.',
+    campuses: ['Shahdara Campus'],
+    fields: {
+        studentName: { label: 'Student Name', placeholder: 'Student full name', required: true, visible: true },
+        parentName: { label: 'Parent Name', placeholder: 'Father / guardian name', required: true, visible: true },
+        className: { label: 'Class', placeholder: 'Required class', required: true, visible: true },
+        phone: { label: 'Phone', placeholder: 'Contact number', required: true, visible: true },
+        email: { label: 'Email', placeholder: 'Email address', required: false, visible: true },
+        campus: { label: 'Campus', placeholder: '', required: true, visible: true },
+        studentAge: { label: 'Student Age', placeholder: 'Age', required: false, visible: true },
+        previousSchool: { label: 'Previous School', placeholder: 'Previous school', required: false, visible: true },
+        address: { label: 'Address', placeholder: 'Home address', required: false, visible: true },
+        message: { label: 'Message', placeholder: 'Any admission details', required: false, visible: true }
+    }
+};
 
 function text(value, fallback = '-') {
     const clean = String(value ?? '').trim();
@@ -100,6 +118,78 @@ function escapeHtml(value) {
     }[char]));
 }
 
+function getAdmissionFormSettings() {
+    try {
+        const raw = JSON.parse(localStorage.getItem(ADMISSION_FORM_SETTINGS_KEY) || 'null');
+        if (!raw || typeof raw !== 'object') return DEFAULT_ADMISSION_FORM_SETTINGS;
+        return {
+            ...DEFAULT_ADMISSION_FORM_SETTINGS,
+            ...raw,
+            campuses: Array.isArray(raw.campuses) && raw.campuses.length ? raw.campuses : DEFAULT_ADMISSION_FORM_SETTINGS.campuses,
+            fields: {
+                ...DEFAULT_ADMISSION_FORM_SETTINGS.fields,
+                ...(raw.fields || {})
+            }
+        };
+    } catch (_error) {
+        return DEFAULT_ADMISSION_FORM_SETTINGS;
+    }
+}
+
+function setLabelTextByInputId(inputId, labelText) {
+    const input = document.getElementById(inputId);
+    const label = input?.closest('label');
+    if (!input || !label) return;
+    const textNode = Array.from(label.childNodes).find((node) => node.nodeType === Node.TEXT_NODE);
+    if (textNode) {
+        textNode.textContent = `${labelText} `;
+    } else {
+        label.insertBefore(document.createTextNode(`${labelText} `), input);
+    }
+}
+
+function setAdmissionFieldVisibility(inputId, visible) {
+    const input = document.getElementById(inputId);
+    const label = input?.closest('label');
+    if (!input || !label) return;
+    label.style.display = visible === false ? 'none' : '';
+}
+
+function applyAdmissionFormSettings() {
+    const settings = getAdmissionFormSettings();
+    const mapping = {
+        inquiryStudentName: settings.fields.studentName,
+        inquiryParentName: settings.fields.parentName,
+        inquiryClass: settings.fields.className,
+        inquiryPhone: settings.fields.phone,
+        inquiryEmail: settings.fields.email,
+        inquiryCampus: settings.fields.campus,
+        inquiryStudentAge: settings.fields.studentAge,
+        inquiryPreviousSchool: settings.fields.previousSchool,
+        inquiryAddress: settings.fields.address,
+        inquiryMessage: settings.fields.message
+    };
+
+    const titleNode = document.querySelector('.admission-copy h2');
+    const descriptionNode = document.querySelector('.admission-copy > p');
+    if (titleNode && settings.title) titleNode.textContent = settings.title;
+    if (descriptionNode && settings.description) descriptionNode.textContent = settings.description;
+
+    Object.entries(mapping).forEach(([inputId, field]) => {
+        if (!field) return;
+        setLabelTextByInputId(inputId, field.label || '');
+        const input = document.getElementById(inputId);
+        if (input && 'placeholder' in input) input.placeholder = field.placeholder || input.placeholder || '';
+        setAdmissionFieldVisibility(inputId, field.visible !== false);
+        if (input) input.required = field.required === true;
+    });
+
+    const campusSelect = document.getElementById('inquiryCampus');
+    if (campusSelect) {
+        campusSelect.innerHTML = (settings.campuses || []).map((campus) => `<option value="${escapeHtml(campus)}">${escapeHtml(campus)}</option>`).join('');
+    }
+}
+
 async function loadWebsiteData() {
     const [branches, bannerPayload] = await Promise.all([
         getJson('/branches', []),
@@ -111,6 +201,7 @@ async function loadWebsiteData() {
 
     renderBanners();
     renderContact();
+    applyAdmissionFormSettings();
 }
 
 function setupNavigation() {

@@ -37,6 +37,14 @@
             align-items: end;
         }
 
+        .branch-span-2 {
+            grid-column: span 2;
+        }
+
+        .branch-span-4 {
+            grid-column: 1 / -1;
+        }
+
         .branch-field {
             margin: 0;
             min-width: 0;
@@ -65,6 +73,33 @@
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(32, 176, 164, 0.12);
+        }
+
+        .branch-field input[type="file"] {
+            padding: 0.45rem 0.7rem;
+            background: #fff;
+        }
+
+        .branch-image-preview {
+            margin-top: 0.55rem;
+            min-height: 84px;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            background: #f8fafc;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 0.35rem;
+        }
+
+        .branch-image-preview img {
+            width: 100%;
+            height: 84px;
+            object-fit: contain;
+            display: block;
         }
 
         .branch-field .password-field input {
@@ -254,6 +289,50 @@
                             <input type="text" id="branchDisplayName" placeholder="Campus 1 Office">
                         </div>
                         <div class="branch-field">
+                            <label>Principal Name</label>
+                            <input type="text" id="branchPrincipalName" placeholder="Principal name">
+                        </div>
+                        <div class="branch-field">
+                            <label>Branch Contact</label>
+                            <input type="text" id="branchContact" placeholder="0300 0000000">
+                        </div>
+                        <div class="branch-field">
+                            <label>Branch Code</label>
+                            <input type="text" id="branchCode" placeholder="BR-001">
+                        </div>
+                        <div class="branch-field">
+                            <label>Students Access Limit</label>
+                            <input type="text" id="branchAccessLimit" placeholder="100">
+                        </div>
+                        <div class="branch-field">
+                            <label>Addition Date</label>
+                            <input type="date" id="branchAdditionDate">
+                        </div>
+                        <div class="branch-field">
+                            <label>Ending Date</label>
+                            <input type="date" id="branchEndingDate">
+                        </div>
+                        <div class="branch-field">
+                            <label>Email Address</label>
+                            <input type="email" id="branchEmail" placeholder="branch@example.com">
+                        </div>
+                        <div class="branch-field">
+                            <label>Principal Picture</label>
+                            <input type="file" id="branchPrincipalPictureFile" accept="image/*">
+                            <input type="hidden" id="branchPrincipalPictureUrl">
+                            <div class="branch-image-preview" id="branchPrincipalPicturePreview">No image selected</div>
+                        </div>
+                        <div class="branch-field">
+                            <label>Logo</label>
+                            <input type="file" id="branchLogoFile" accept="image/*">
+                            <input type="hidden" id="branchLogoUrl">
+                            <div class="branch-image-preview" id="branchLogoPreview">No image selected</div>
+                        </div>
+                        <div class="branch-field branch-span-2">
+                            <label>Address</label>
+                            <input type="text" id="branchAddress" placeholder="Branch address">
+                        </div>
+                        <div class="branch-field">
                             <label>Username</label>
                             <input type="text" id="branchUsername" required placeholder="campus1_admin">
                         </div>
@@ -287,6 +366,10 @@
                         <tr>
                             <th>Campus</th>
                             <th>Display Name</th>
+                            <th>Principal</th>
+                            <th>Contact</th>
+                            <th>Branch Code</th>
+                            <th>Access Limit</th>
                             <th>Username</th>
                             <th>Password</th>
                             <th>Status</th>
@@ -296,7 +379,7 @@
                     </thead>
                     <tbody id="branchTableBody">
                         <tr>
-                            <td colspan="7" style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading branches...</td>
+                            <td colspan="11" style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading branches...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -338,7 +421,7 @@
                 window.branchRecordsCache = rows;
 
                 if (!rows.length) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 1rem; color: var(--text-secondary);">No branches registered yet.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 1rem; color: var(--text-secondary);">No branches registered yet.</td></tr>';
                     return;
                 }
 
@@ -346,6 +429,13 @@
                     <tr>
                         <td><strong>${html(branch.campusName || '-')}</strong></td>
                         <td>${html(branch.fullName || '-')}</td>
+                        <td>
+                            <div>${html(branch.principalName || '-')}</div>
+                            <small style="color: var(--text-secondary);">${html(branch.email || '')}</small>
+                        </td>
+                        <td>${html(branch.branchContact || '-')}</td>
+                        <td>${html(branch.branchCode || '-')}</td>
+                        <td>${html(branch.studentAccessLimit || '-')}</td>
                         <td>${html(branch.username || '-')}</td>
                         <td>${html(branch.plainPassword || 'Hidden')}</td>
                         <td>${branch.isActive === false ? 'Inactive' : 'Active'}</td>
@@ -367,7 +457,7 @@
             async function loadBranchRows() {
                 const tbody = document.getElementById('branchTableBody');
                 if (tbody) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading branches...</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; padding: 1rem; color: var(--text-secondary);">Loading branches...</td></tr>';
                 }
                 try {
                     const token = sessionStorage.getItem('eduCore_token') || '';
@@ -394,6 +484,16 @@
                 const recordId = document.getElementById('branchRecordId').value.trim();
                 const campusName = document.getElementById('branchCampusName').value.trim();
                 const fullName = document.getElementById('branchDisplayName').value.trim() || campusName;
+                const principalName = document.getElementById('branchPrincipalName').value.trim();
+                const branchContact = document.getElementById('branchContact').value.trim();
+                const branchCode = document.getElementById('branchCode').value.trim();
+                const studentAccessLimit = document.getElementById('branchAccessLimit').value.trim();
+                const additionDate = document.getElementById('branchAdditionDate').value.trim();
+                const endingDate = document.getElementById('branchEndingDate').value.trim();
+                const email = document.getElementById('branchEmail').value.trim();
+                const principalPicture = document.getElementById('branchPrincipalPictureUrl').value.trim();
+                const logo = document.getElementById('branchLogoUrl').value.trim();
+                const address = document.getElementById('branchAddress').value.trim();
                 const username = document.getElementById('branchUsername').value.trim();
                 const password = document.getElementById('branchPassword').value.trim();
 
@@ -419,7 +519,23 @@
                             'Content-Type': 'application/json',
                             ...(sessionStorage.getItem('eduCore_token') ? { Authorization: `Bearer ${sessionStorage.getItem('eduCore_token')}` } : {})
                         },
-                        body: JSON.stringify({ id: recordId || undefined, campusName, fullName, username, password })
+                        body: JSON.stringify({
+                            id: recordId || undefined,
+                            campusName,
+                            fullName,
+                            principalName,
+                            branchContact,
+                            branchCode,
+                            studentAccessLimit,
+                            additionDate,
+                            endingDate,
+                            email,
+                            principalPicture,
+                            logo,
+                            address,
+                            username,
+                            password
+                        })
                     });
                     const data = await response.json();
                     if (!response.ok || data.success === false) {
@@ -429,6 +545,18 @@
                     document.getElementById('branchRecordId').value = '';
                     document.getElementById('branchCampusName').value = '';
                     document.getElementById('branchDisplayName').value = '';
+                    document.getElementById('branchPrincipalName').value = '';
+                    document.getElementById('branchContact').value = '';
+                    document.getElementById('branchCode').value = '';
+                    document.getElementById('branchAccessLimit').value = '';
+                    document.getElementById('branchAdditionDate').value = '';
+                    document.getElementById('branchEndingDate').value = '';
+                    document.getElementById('branchEmail').value = '';
+                    document.getElementById('branchPrincipalPictureUrl').value = '';
+                    document.getElementById('branchLogoUrl').value = '';
+                    document.getElementById('branchPrincipalPictureFile').value = '';
+                    document.getElementById('branchLogoFile').value = '';
+                    document.getElementById('branchAddress').value = '';
                     document.getElementById('branchUsername').value = '';
                     document.getElementById('branchPassword').value = '';
                     await loadBranchRows();
@@ -469,13 +597,7 @@
             };
 
             function bindBranchPage() {
-                const form = document.getElementById('branchRegistrationForm');
-                if (form) {
-                    if (typeof window.handleBranchRegistrationSubmit === 'function') {
-                        form.removeEventListener('submit', window.handleBranchRegistrationSubmit);
-                    }
-                    form.addEventListener('submit', saveBranch);
-                }
+                if (typeof window.renderBranches === 'function') return;
                 loadBranchRows();
             }
 

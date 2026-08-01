@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Form Settings - Apex Group Of Schools</title>
+    <link rel="icon" type="image/png" href="images/logo.jpeg">
+    <link rel="stylesheet" href="style.css?v=20260603-american-lyceum-brand">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .layout { display:grid; grid-template-columns:minmax(320px,0.95fr) minmax(320px,1.05fr); gap:1rem; align-items:start; }
+        .card { background:#fff; border:1px solid var(--border-color); border-radius:14px; box-shadow:var(--shadow-sm); padding:1rem; }
+        .field { display:grid; gap:.35rem; margin-bottom:.85rem; }
+        .field label { font-size:.84rem; font-weight:800; color:var(--text-secondary); }
+        .field input, .field textarea, .field select { width:100%; min-height:42px; border:1px solid var(--border-color); border-radius:10px; padding:.65rem .85rem; font:inherit; background:#fff; }
+        .field textarea { min-height:88px; resize:vertical; }
+        .field-row { display:grid; grid-template-columns: 1.2fr 1fr auto auto; gap:.65rem; align-items:end; margin-bottom:.75rem; }
+        .mini { font-size:.82rem; color:var(--text-secondary); }
+        .preview { border:1px solid #dfe7ef; border-radius:14px; padding:1rem; background:linear-gradient(180deg,#fff 0%,#f7fbfd 100%); }
+        .preview h3 { margin:0 0 .5rem; }
+        .preview-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; }
+        .preview-item { border:1px solid #e2e8f0; border-radius:12px; background:#fff; padding:.8rem; }
+        .preview-item strong { display:block; margin-bottom:.1rem; }
+        .actions { display:flex; gap:.65rem; flex-wrap:wrap; }
+        @media (max-width: 920px) { .layout, .preview-grid, .field-row { grid-template-columns:1fr; } }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <aside class="sidebar">
+        <div class="logo-section"><img class="sidebar-logo-img" src="images/logo.jpeg" alt="Apex Group Of Schools logo"></div>
+        <nav class="nav-links"></nav>
+        <a href="settings.html" class="user-profile"><div class="avatar">AD</div><div class="user-info"><h4>Admin User</h4><p>Principal</p></div></a>
+    </aside>
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Customize Admission Form</h1>
+                <p style="color:var(--text-secondary); margin-top:.25rem;">Changes apply to the public inquiry form on the website and index page.</p>
+            </div>
+        </header>
+        <section class="layout">
+            <article class="card">
+                <h2>Form Settings</h2>
+                <div class="field"><label for="formTitle">Form Heading</label><input id="formTitle"></div>
+                <div class="field"><label for="formDescription">Form Description</label><textarea id="formDescription"></textarea></div>
+                <div class="field"><label for="campusList">Campus Options</label><textarea id="campusList" placeholder="One campus per line"></textarea></div>
+                <h3 style="margin-top:1rem;">Fields</h3>
+                <div id="fieldEditor"></div>
+                <div class="actions">
+                    <button class="btn btn-outline" type="button" id="resetSettingsBtn"><i data-lucide="rotate-ccw"></i> Reset Defaults</button>
+                    <button class="btn btn-primary" type="button" id="saveSettingsBtn"><i data-lucide="save"></i> Save Settings</button>
+                </div>
+                <p class="mini" id="settingsStatus" style="margin-top:.75rem;"></p>
+            </article>
+            <article class="card preview">
+                <h3>Live Preview</h3>
+                <p class="mini" id="previewDesc">...</p>
+                <div class="preview-grid" id="previewGrid"></div>
+            </article>
+        </section>
+    </main>
+</div>
+<script src="auth.js?v=20260801-admission-settings"></script>
+<script src="script.js?v=20260801-admission-settings"></script>
+<script>
+const KEY = 'eduCore_admission_form_settings';
+const DEFAULTS = {
+    title: 'Apply online for admission.',
+    description: 'Fill the admission form and the school office will receive your application in the portal.',
+    campuses: ['Shahdara Campus'],
+    fields: {
+        studentName: { label: 'Student Name', placeholder: 'Student full name', required: true, visible: true },
+        parentName: { label: 'Parent Name', placeholder: 'Father / guardian name', required: true, visible: true },
+        className: { label: 'Class', placeholder: 'Required class', required: true, visible: true },
+        phone: { label: 'Phone', placeholder: 'Contact number', required: true, visible: true },
+        email: { label: 'Email', placeholder: 'Email address', required: false, visible: true },
+        campus: { label: 'Campus', placeholder: '', required: true, visible: true },
+        studentAge: { label: 'Student Age', placeholder: 'Age', required: false, visible: true },
+        previousSchool: { label: 'Previous School', placeholder: 'Previous school', required: false, visible: true },
+        address: { label: 'Address', placeholder: 'Home address', required: false, visible: true },
+        message: { label: 'Message', placeholder: 'Any admission details', required: false, visible: true }
+    }
+};
+const ORDER = ['studentName','parentName','className','phone','email','campus','studentAge','previousSchool','address','message'];
+function clone(v){ return JSON.parse(JSON.stringify(v)); }
+function read(){ try { const raw=JSON.parse(localStorage.getItem(KEY)||'null'); return raw ? {...clone(DEFAULTS), ...raw, fields:{...clone(DEFAULTS.fields), ...(raw.fields||{})}, campuses:Array.isArray(raw.campuses)&&raw.campuses.length?raw.campuses:clone(DEFAULTS.campuses)} : clone(DEFAULTS); } catch { return clone(DEFAULTS); } }
+function save(value){ localStorage.setItem(KEY, JSON.stringify(value)); }
+function esc(v){ return String(v ?? '').replace(/[&<>"']/g, (c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+function renderEditor(){
+    const settings = read();
+    document.getElementById('formTitle').value = settings.title || '';
+    document.getElementById('formDescription').value = settings.description || '';
+    document.getElementById('campusList').value = (settings.campuses || []).join('\n');
+    document.getElementById('fieldEditor').innerHTML = ORDER.map((key) => {
+        const field = settings.fields[key] || {};
+        return `<div class="field-row">
+            <div class="field"><label>Field Label</label><input data-key="${key}" data-name="label" value="${esc(field.label || '')}"></div>
+            <div class="field"><label>Placeholder</label><input data-key="${key}" data-name="placeholder" value="${esc(field.placeholder || '')}"></div>
+            <label class="field" style="margin:0;"><span>Required</span><input type="checkbox" data-key="${key}" data-name="required" ${field.required ? 'checked' : ''}></label>
+            <label class="field" style="margin:0;"><span>Visible</span><input type="checkbox" data-key="${key}" data-name="visible" ${field.visible === false ? '' : 'checked'}></label>
+        </div>`;
+    }).join('');
+    renderPreview(settings);
+}
+function renderPreview(settings){
+    document.getElementById('previewDesc').textContent = settings.description || '';
+    document.getElementById('previewGrid').innerHTML = ORDER.filter((key) => (settings.fields[key] || {}).visible !== false).map((key) => {
+        const field = settings.fields[key] || {};
+        return `<div class="preview-item"><strong>${esc(field.label || key)}</strong><span class="mini">${esc(field.placeholder || '-')}</span>${field.required ? '<div class="status success" style="margin-top:.35rem;">Required</div>' : ''}</div>`;
+    }).join('');
+}
+function collect(){
+    const current = read();
+    const next = {
+        ...current,
+        title: document.getElementById('formTitle').value.trim(),
+        description: document.getElementById('formDescription').value.trim(),
+        campuses: document.getElementById('campusList').value.split('\n').map((s) => s.trim()).filter(Boolean),
+        fields: clone(current.fields)
+    };
+    document.querySelectorAll('[data-key][data-name]').forEach((el) => {
+        const key = el.dataset.key;
+        const name = el.dataset.name;
+        if (!next.fields[key]) next.fields[key] = {};
+        next.fields[key][name] = el.type === 'checkbox' ? el.checked : el.value.trim();
+    });
+    save(next);
+    return next;
+}
+document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+    const settings = collect();
+    document.getElementById('settingsStatus').textContent = 'Settings saved. Reload the public website to see changes.';
+    renderPreview(settings);
+});
+document.getElementById('resetSettingsBtn').addEventListener('click', () => {
+    save(clone(DEFAULTS));
+    renderEditor();
+    document.getElementById('settingsStatus').textContent = 'Default admission form restored.';
+});
+document.addEventListener('input', (event) => {
+    if (event.target.closest('#fieldEditor') || ['formTitle','formDescription','campusList'].includes(event.target.id)) {
+        renderPreview(collect());
+        document.getElementById('settingsStatus').textContent = 'Preview updated. Save to publish changes.';
+    }
+});
+renderEditor();
+if (window.lucide) window.lucide.createIcons();
+</script>
+</body>
+</html>
