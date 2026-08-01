@@ -3,13 +3,13 @@ const { readStore, upsertRecord } = require('../_lib/mobileStore');
 
 const defaultAboutSoftware = {
     id: 'ABOUT-SOFTWARE',
-    appName: 'Apex Group Of Schools',
-    schoolName: 'Apex Group Of Schools',
+    appName: 'Xmaxify School System',
+    schoolName: 'Xmaxify School System',
     website: 'https://YOUR-DOMAIN.com/',
     supportEmail: '',
-    supportPhone: '03461414335',
+    supportPhone: '03236150006',
     schoolAddress: 'Lajpat Road Shahdara Lahore',
-    description: 'Student and teacher portal APIs for Apex Group Of Schools.',
+    description: 'Student and teacher portal APIs for Xmaxify School System.',
     version: '1.0.0'
 };
 

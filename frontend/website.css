@@ -93,7 +93,8 @@ svg {
 .whatsapp-action img {
     width: 18px;
     height: 18px;
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 50%;
     display: block;
     flex: 0 0 auto;
 }
@@ -1012,9 +1013,10 @@ h3 {
 .floating-whatsapp img {
     width: 42px;
     height: 42px;
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 50%;
     display: block;
-    mix-blend-mode: multiply;
+    mix-blend-mode: normal;
 }
 
 .website-banner-section {

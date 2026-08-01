@@ -47,7 +47,9 @@ body.xmaxify-home .whatsapp-action {
 body.xmaxify-home .whatsapp-link img,
 body.xmaxify-home .whatsapp-action img,
 body.xmaxify-home .floating-whatsapp img {
-    object-fit: contain;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
 }
 
 body.xmaxify-home .whatsapp-link img,
@@ -59,7 +61,7 @@ body.xmaxify-home .whatsapp-action img {
 body.xmaxify-home .floating-whatsapp img {
     width: 42px;
     height: 42px;
-    mix-blend-mode: multiply;
+    mix-blend-mode: normal;
 }
 
 body.xmaxify-home .brand span,

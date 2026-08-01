@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "studentName": "Atif",
+    "parentName": "asif",
+    "className": "class 1",
+    "phone": "03003008000",
+    "email": "email@email.com",
+    "campus": "Islamabad, Lahore",
+    "studentAge": "23",
+    "previousSchool": "none",
+    "address": "islamabad",
+    "message": "need apply for admission",
+    "id": "ADM-1785609127682-s5q6fn",
+    "createdAt": "2026-08-01T18:32:07.682Z",
+    "updatedAt": "2026-08-01T18:32:07.682Z"
+  }
+]
