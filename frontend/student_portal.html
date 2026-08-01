@@ -1286,8 +1286,7 @@
         }
 
         body {
-            background:
-                linear-gradient(180deg, #f7fafc 0%, #eef7f6 44%, #f8fafc 100%);
+            background: #f3faf6;
             color: #0f172a;
         }
 
@@ -1665,7 +1664,7 @@
             top: 0;
             bottom: 0;
             width: 6px;
-            background: linear-gradient(180deg, #0f766e, #2563eb 54%, #d97706);
+            background: #0f7a3d;
         }
 
         .user-card::after {
@@ -1676,7 +1675,7 @@
             width: 260px;
             height: 260px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(37, 99, 235, 0.12), rgba(37, 99, 235, 0));
+            background: rgba(24, 169, 87, 0.08);
             pointer-events: none;
         }
 
@@ -1832,7 +1831,7 @@
             align-items: stretch;
             border: 1px solid rgba(32, 176, 164, 0.2);
             border-radius: 18px;
-            background: linear-gradient(135deg, #ffffff 0%, #f3fffd 100%);
+            background: #ffffff;
             box-shadow: 0 16px 34px rgba(15, 76, 117, 0.09);
             overflow: hidden;
         }
@@ -1950,7 +1949,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(37, 99, 235, 0.05));
+            background: rgba(24, 169, 87, 0.08);
             opacity: 0;
             transition: opacity 0.18s ease;
             z-index: -1;
@@ -2993,12 +2992,12 @@
                 return {
                     schoolName: 'Xmaxify School System',
                     schoolTitle: 'Xmaxify School System',
-                    phone: '+92 323 6150006', address: 'Islamabad, Lahore', schoolAddress: 'Islamabad, Lahore',
+                    phone: '+92 323 6150006', address: 'Xmaxify School System', schoolAddress: 'Xmaxify School System',
                     logoDataUrl: '',
                     ...(JSON.parse(localStorage.getItem(STORAGE_KEY_SETTINGS) || '{}') || {})
                 };
             } catch (_error) {
-                return { schoolName: 'Xmaxify School System', schoolTitle: 'Xmaxify School System', phone: '+92 323 6150006', address: 'Islamabad, Lahore', schoolAddress: 'Islamabad, Lahore', logoDataUrl: '' };
+                return { schoolName: 'Xmaxify School System', schoolTitle: 'Xmaxify School System', phone: '+92 323 6150006', address: 'Xmaxify School System', schoolAddress: 'Xmaxify School System', logoDataUrl: '' };
             }
         }
 
@@ -5153,7 +5152,7 @@
         function getStudentBranchContactDetails(_campusName) {
             return {
                 campusLabel: 'Shahdara Campus',
-                contactLine: 'Address: Islamabad, Lahore | Phone: +92 323 6150006'
+                contactLine: 'School: Xmaxify School System | Phone: +92 323 6150006'
             };
         }
 

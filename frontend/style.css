@@ -96,10 +96,7 @@ ul {
     display: flex;
     height: 100vh;
     width: 100%;
-    background:
-        radial-gradient(circle at 12% 18%, rgba(24, 169, 87, 0.14), transparent 22rem),
-        radial-gradient(circle at 88% 16%, rgba(15, 94, 156, 0.12), transparent 18rem),
-        linear-gradient(135deg, rgba(15, 94, 156, 0.12), rgba(242, 178, 27, 0.12));
+    background: #eef7f1;
     align-items: center;
     justify-content: center;
 }
@@ -116,7 +113,7 @@ ul {
 }
 
 .login-header {
-    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color) 72%, var(--accent-color));
+    background: var(--primary-dark);
     padding: 2.5rem 2rem;
     text-align: center;
     color: white;
@@ -129,7 +126,7 @@ ul {
 .login-icon-circle {
     width: min(270px, 100%);
     min-height: 86px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(8, 58, 99, 0.18));
+    background: rgba(255, 255, 255, 0.14);
     border: 1px solid rgba(255, 255, 255, 0.28);
     border-radius: 8px;
     display: grid;
@@ -157,8 +154,8 @@ ul {
 }
 
 .login-icon-circle::after {
-    content: "Xmaxify School System\A Islamabad, Lahore";
-    white-space: pre-line;
+    content: "Xmaxify School System";
+    white-space: nowrap;
     color: #ffffff;
     font-size: 1.16rem;
     font-weight: 850;
@@ -265,7 +262,7 @@ ul {
 }
 
 .btn-success {
-    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
+    background: var(--secondary-color);
     color: white;
     font-weight: 600;
     transition: background-color 0.2s;
@@ -276,7 +273,7 @@ ul {
 }
 
 .btn-success:hover {
-    background: linear-gradient(135deg, var(--primary-dark), #0c6f46);
+    background: var(--primary-dark);
 }
 
 .portal-quick-link {
@@ -407,7 +404,7 @@ ul {
 
 .sidebar {
     width: 244px;
-    background: linear-gradient(180deg, #083a63 0%, #0f5e9c 100%);
+    background: var(--primary-dark);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
@@ -431,7 +428,7 @@ ul {
     margin-bottom: 1.55rem;
     border: 1px solid rgba(242, 178, 27, 0.28);
     border-radius: 8px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(242, 178, 27, 0.12));
+    background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
     text-align: left;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 12px 28px rgba(0, 0, 0, 0.12);
@@ -651,7 +648,7 @@ ul {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0f5e9c 0%, #f2b21b 100%);
+    background: var(--secondary-color);
     color: white;
     display: flex;
     align-items: center;
@@ -674,7 +671,7 @@ ul {
     overflow-y: auto;
     overflow-x: hidden;
     padding: 2rem;
-    background: linear-gradient(180deg, #f8fbff 0%, #eef5fb 100%);
+    background: #f7fbf8;
 }
 
 .header {
@@ -915,7 +912,7 @@ ul {
     position: absolute;
     inset: 0 0 auto 0;
     height: 3px;
-    background: linear-gradient(90deg, #0f5e9c 0%, #f2b21b 100%);
+    background: var(--secondary-color);
 }
 
 .card:hover {
@@ -1319,7 +1316,7 @@ tbody tr:hover {
 
 .doc-download-btn {
     border: 1px solid #bfdbfe;
-    background: linear-gradient(135deg, #f8fbff, #eef5fb);
+    background: #f8fbff;
     color: #083a63;
     border-radius: 999px;
     padding: 0.38rem 0.72rem;
@@ -1753,11 +1750,7 @@ tbody tr:hover {
     align-items: center;
     justify-content: center;
     padding: 1.25rem;
-    background:
-        radial-gradient(circle at 12% 15%, rgba(43, 108, 176, 0.34), rgba(43, 108, 176, 0) 55%),
-        radial-gradient(circle at 88% 18%, rgba(59, 130, 246, 0.28), rgba(59, 130, 246, 0) 55%),
-        radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.18), rgba(14, 165, 233, 0) 60%),
-        linear-gradient(135deg, rgba(15, 23, 42, 0.58), rgba(15, 23, 42, 0.35));
+    background: rgba(15, 23, 42, 0.55);
     backdrop-filter: blur(6px);
     z-index: 10050;
 }
@@ -1773,7 +1766,7 @@ tbody tr:hover {
 
 .edu-welcome-card {
     width: min(460px, 100%);
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    background: #ffffff;
     border: 1px solid rgba(226, 232, 240, 0.9);
     border-radius: 1.15rem;
     padding: 2rem 1.75rem 1.5rem;
@@ -1803,14 +1796,14 @@ tbody tr:hover {
 .edu-welcome-card::before {
     top: -130px;
     left: -90px;
-    background: radial-gradient(circle at 30% 30%, rgba(43, 108, 176, 0.55), rgba(43, 108, 176, 0));
+    background: rgba(24, 169, 87, 0.12);
     animation: eduWelcomeBlob 2.8s ease-in-out infinite alternate;
 }
 
 .edu-welcome-card::after {
     bottom: -150px;
     right: -110px;
-    background: radial-gradient(circle at 60% 40%, rgba(59, 130, 246, 0.55), rgba(59, 130, 246, 0));
+    background: rgba(15, 122, 61, 0.12);
     animation: eduWelcomeBlob 3.2s ease-in-out infinite alternate-reverse;
 }
 
@@ -1822,16 +1815,16 @@ tbody tr:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(43, 108, 176, 0.12);
-    color: var(--primary-color);
-    border: 1px solid rgba(43, 108, 176, 0.24);
+    background: rgba(24, 169, 87, 0.12);
+    color: var(--secondary-color);
+    border: 1px solid rgba(24, 169, 87, 0.24);
     position: relative;
     animation: eduWelcomeIconPop 900ms ease-out both;
 }
 
 .edu-welcome-logo-wrap {
     background: #ffffff;
-    border-color: rgba(43, 108, 176, 0.32);
+    border-color: rgba(24, 169, 87, 0.32);
     box-shadow: 0 14px 32px rgba(15, 23, 42, 0.16);
     padding: 10px;
 }
@@ -1850,8 +1843,8 @@ tbody tr:hover {
     width: 92px;
     height: 92px;
     border-radius: 999px;
-    border: 1px solid rgba(43, 108, 176, 0.25);
-    box-shadow: 0 0 0 10px rgba(43, 108, 176, 0.08);
+    border: 1px solid rgba(24, 169, 87, 0.25);
+    box-shadow: 0 0 0 10px rgba(24, 169, 87, 0.08);
     opacity: 0;
     animation: eduWelcomeRing 1.4s ease-out infinite;
     pointer-events: none;
@@ -1866,12 +1859,10 @@ tbody tr:hover {
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
     .edu-welcome-title {
-        background: linear-gradient(90deg, var(--primary-color), #3b82f6, var(--primary-color));
-        background-size: 200% 100%;
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        animation: eduWelcomeTitleShine 2.4s ease-in-out infinite;
+        color: var(--secondary-color);
+        -webkit-background-clip: initial;
+        background-clip: initial;
+        animation: none;
     }
 }
 
@@ -1887,9 +1878,7 @@ tbody tr:hover {
     position: absolute;
     inset: -2px;
     pointer-events: none;
-    background:
-        radial-gradient(circle at 20% 10%, rgba(43, 108, 176, 0.45), rgba(43, 108, 176, 0) 45%),
-        radial-gradient(circle at 80% 0%, rgba(59, 130, 246, 0.35), rgba(59, 130, 246, 0) 50%);
+    background: rgba(24, 169, 87, 0.08);
     opacity: 0;
     animation: eduWelcomeGlow 900ms ease-out both;
 }
@@ -1909,7 +1898,7 @@ tbody tr:hover {
     left: -40%;
     height: 100%;
     width: 40%;
-    background: linear-gradient(90deg, rgba(43, 108, 176, 0), rgba(43, 108, 176, 0.9), rgba(99, 179, 237, 0.9), rgba(99, 179, 237, 0));
+    background: rgba(24, 169, 87, 0.7);
     animation: eduWelcomeSweep 1000ms ease-out both;
 }
 
