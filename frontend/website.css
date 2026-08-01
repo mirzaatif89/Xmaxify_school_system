@@ -991,9 +991,12 @@ h3 {
     z-index: 120;
     width: 66px;
     height: 66px;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
+    padding: 0;
+    line-height: 0;
     border: 4px solid #ffffff;
     border-radius: 50%;
     background: #18a957;
@@ -1007,10 +1010,11 @@ h3 {
 }
 
 .floating-whatsapp img {
-    width: 34px;
-    height: 34px;
+    width: 42px;
+    height: 42px;
     object-fit: contain;
     display: block;
+    mix-blend-mode: multiply;
 }
 
 .website-banner-section {
@@ -1265,6 +1269,11 @@ h3 {
         width: 58px;
         height: 58px;
         border-width: 3px;
+    }
+
+    .floating-whatsapp img {
+        width: 36px;
+        height: 36px;
     }
 }
 
